@@ -3,3 +3,4 @@ intellij/
 .idea/
 out/artifacts/server/server.war
 server.iml
+*.iml
