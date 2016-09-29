@@ -1,5 +1,7 @@
 package com.eu.article.impl;
 
+import com.eu.article.bd.Article;
+
 /**
  * Created by Juan on 29/09/2016.
  */

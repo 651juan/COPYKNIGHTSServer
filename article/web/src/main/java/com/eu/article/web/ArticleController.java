@@ -1,6 +1,6 @@
 package com.eu.article.web;
 
-import com.eu.article.impl.Article;
+import com.eu.article.bd.Article;
 import com.eu.article.bd.ArticleFacade;
 import com.eu.article.impl.ArticleFacadeImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
