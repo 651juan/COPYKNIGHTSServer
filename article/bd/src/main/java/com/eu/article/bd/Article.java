@@ -7,6 +7,13 @@ public class Article {
     private String title;
     private String description;
 
+    public Article() {}
+
+    public Article(String t, String d) {
+        this.title = t;
+        this.description = d;
+    }
+
     public String getTitle() {
         return title;
     }

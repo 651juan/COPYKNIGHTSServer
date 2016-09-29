@@ -15,7 +15,8 @@ public class ArticleController {
     @RequestMapping("/article")
     public Article article() {
         ArticleFacade facade = new ArticleFacadeImpl();
-        facade.getRawArticle("http://www.copyrightevidence.org/evidence-wiki/api.php?action=query&prop=revisions&rvprop=content&format=json&titles=Acilar%20(2010)");
-        return new Article();
+
+        //facade.getRawArticle("http://www.copyrightevidence.org/evidence-wiki/api.php?action=query&prop=revisions&rvprop=content&format=json&titles=Acilar%20(2010)");
+        return facade.pageToArticle(facade.getPages("Acilar (2010)").get(0));
     }
 }

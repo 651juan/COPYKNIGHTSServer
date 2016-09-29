@@ -12,11 +12,28 @@
     <artifactId>article-impl</artifactId>
 
 
+    <repositories>
+        <repository>
+            <id>info-bliki-repository</id>
+            <url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>euHackathon</groupId>
             <artifactId>article-bd</artifactId>
             <version>0.1.0</version>
+        </dependency>
+
+        <!-- bliki -->
+        <dependency>
+            <groupId>info.bliki.wiki</groupId>
+            <artifactId>bliki-core</artifactId>
+            <version>3.1.0</version>
         </dependency>
     </dependencies>
 </project>
