@@ -12,55 +12,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Juan on 29/09/2016.
  */
 public class ArticleFacadeImpl implements ArticleFacade {
-    @Override
-    public Article pageToArticle(Page page){
-        return new Article(page.getTitle(), page.getCurrentContent());
+
+    public List<Article> pagesToArticles(List<Page> pages){
+        return pages.stream().map(x -> new Article(x.getTitle(), x.getCurrentContent())).collect(Collectors.toList());
     }
 
-    //Returns all pages with the given title
     @Override
-    public List<Page> getPages(String articleTitle) {
+    public List<Article> getArticles(String articleTitle) {
         User user = new User("", "", "http://www.copyrightevidence.org/evidence-wiki/api.php");
         user.login();
-        return user.queryContent(articleTitle);
-    }
-
-    @Override
-    public String getRawArticle(String url) {
-
-       try {
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-            // optional default is GET
-            con.setRequestMethod("GET");
-
-            //add request header
-            con.setRequestProperty("User-Agent", "");
-
-            int responseCode = con.getResponseCode();
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            return response.toString();
-        } catch (Exception e) {
-           e.printStackTrace();
-        }
-        return null;
+        return pagesToArticles(user.queryContent(articleTitle));
     }
 }

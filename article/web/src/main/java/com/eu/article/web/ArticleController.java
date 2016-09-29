@@ -4,7 +4,10 @@ import com.eu.article.bd.Article;
 import com.eu.article.bd.ArticleFacade;
 import com.eu.article.impl.ArticleFacadeImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by Juan on 29/09/2016.
@@ -13,10 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticleController {
 
     @RequestMapping("/article")
-    public Article article() {
+    public List<Article> articleByTitle(@RequestParam("title") String title) {
         ArticleFacade facade = new ArticleFacadeImpl();
-
-        //facade.getRawArticle("http://www.copyrightevidence.org/evidence-wiki/api.php?action=query&prop=revisions&rvprop=content&format=json&titles=Acilar%20(2010)");
-        return facade.pageToArticle(facade.getPages("Acilar (2010)").get(0));
+        return facade.getArticles(title);
     }
 }
