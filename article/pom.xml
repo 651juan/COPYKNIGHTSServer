@@ -14,6 +14,7 @@
     <modules>
         <module>bd</module>
         <module>impl</module>
+        <module>web</module>
     </modules>
 
 

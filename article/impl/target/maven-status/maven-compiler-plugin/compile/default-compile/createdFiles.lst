@@ -1,4 +1,3 @@
-com\eu\article\ArticleFacadeImpl.class
-com\eu\article\Article.class
-com\eu\article\ArticleParser.class
-com\eu\article\ArticleController.class
+com\eu\article\impl\Article.class
+com\eu\article\impl\ArticleFacadeImpl.class
+com\eu\article\impl\ArticleParser.class
