@@ -1,7 +1,10 @@
 *.name
 intellij/
 .idea/
-out/artifacts/server/server.war
 server.iml
 *.iml
 out/
+*/target/*
+*/target/**
+*.class
+*.lst

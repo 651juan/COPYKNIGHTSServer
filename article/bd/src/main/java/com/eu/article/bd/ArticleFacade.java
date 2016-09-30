@@ -9,10 +9,17 @@ import java.util.List;
  */
 public interface ArticleFacade {
     /**
-     * Gets a @{@link List} of @{@link Article} by searching the titles.
-     * @param articleTitle @{@link List} of page titles as @{@link String}
+     * Gets a @{@link List} of @{@link Article} incl. description, by searching the titles.
+     * @param articleTitle @{@link List} of page titles as a comma separated @{@link String}
      * @return @{@link List} of @{@link Article}
      */
     public List<Article> getArticles(String articleTitle);
+
+    /**
+     * Gets a @{@link List} of short @{@link Article} not including description. by searching for ids.
+     * @param articleIds @{@link List} of page ids as a comma separated @{@link String}
+     * @return @{@link List} of @{@link Article}
+     */
+    public List<Article> getArticlesById(String articleIds);
 
 }

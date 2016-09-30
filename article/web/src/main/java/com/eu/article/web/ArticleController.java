@@ -15,9 +15,24 @@ import java.util.List;
 @RestController
 public class ArticleController {
 
-    @RequestMapping("/article")
-    public List<Article> articleByTitle(@RequestParam("title") String title) {
-        ArticleFacade facade = new ArticleFacadeImpl();
-        return facade.getArticles(title);
+    public static final String URL_TO_WIKI = "http://www.copyrightevidence.org/evidence-wiki/api.php";
+    ArticleFacade facade;
+
+    @RequestMapping(value="/article", params="title")
+    public List<Article> articleByTitle(@RequestParam("title") String titles) {
+        initialiseFacade();
+        return facade.getArticles(titles);
+    }
+
+    @RequestMapping(value="/article", params="pageids")
+    public List<Article> articleById(@RequestParam("pageids") String ids) {
+        initialiseFacade();
+        return facade.getArticlesById(ids);
+    }
+
+    private void initialiseFacade() {
+        if (facade == null) {
+            facade = new ArticleFacadeImpl("", "", URL_TO_WIKI);
+        }
     }
 }
