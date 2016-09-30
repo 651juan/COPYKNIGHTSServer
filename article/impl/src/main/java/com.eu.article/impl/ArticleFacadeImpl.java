@@ -6,13 +6,7 @@ import info.bliki.api.Connector;
 import info.bliki.api.Page;
 import info.bliki.api.User;
 import info.bliki.api.query.Query;
-import info.bliki.wiki.model.WikiModel;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +23,7 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     public List<Article> pagesToArticles(List<Page> pages){
-        return pages.stream().map(x -> new Article(x.getTitle(), x.getCurrentContent(), false)).collect(Collectors.toList());
+        return pages.stream().map(x -> new Article(x.getTitle(), Integer.valueOf(x.getPageid()), x.getCurrentContent(), false)).collect(Collectors.toList());
     }
 
     public List<Article> pagesToShortArticles(List<Page> pages){
@@ -37,19 +31,26 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     @Override
-    public List<Article> getArticles(String articleTitle) {
+    public List<Article> getArticles(String articleTitles) {
         user.login();
-        return pagesToArticles(user.queryContent(articleTitle));
+        return pagesToArticles(user.queryContent(articleTitles));
     }
 
     @Override
-    public List<Article> getArticlesById(String articleIds) {
+    public List<Article> getArticlesById(String articleIds, boolean getContent) {
         Query query = new Query();
         int[] pageIds = Arrays.stream(articleIds.split(","))
                 .mapToInt(Integer::valueOf)
                 .toArray();
         query.pageids(pageIds);
         Connector c = new Connector();
-        return pagesToShortArticles(c.query(user,query));
+        List<Page> queryResult = c.query(user, query);
+        if (getContent) {
+            return pagesToArticles(user.queryContent(queryResult.stream()
+                    .map(Page::getTitle)
+                    .collect(Collectors.toList())));
+        } else {
+            return pagesToShortArticles(queryResult);
+        }
     }
 }
