@@ -6,20 +6,20 @@ package com.eu.article.bd;
 public class Article {
     private String title;
     private String description;
-    private int pageid;
+    private String pageid;
     // When true artle only contains title and pageid
     private boolean shortArticle;
 
     public Article() {}
 
-    public Article(String t, int p, String d, boolean s) {
+    public Article(String t, String p, String d, boolean s) {
         this.title = t;
         this.description = d;
         this.shortArticle = s;
         this.pageid = p;
     }
 
-    public Article(String t, int p, boolean s) {
+    public Article(String t, String p, boolean s) {
         this.title = t;
         this.pageid = p;
         this.shortArticle = s;
@@ -41,11 +41,11 @@ public class Article {
         this.description = description;
     }
 
-    public int getPageid() {
+    public String getPageid() {
         return pageid;
     }
 
-    public void setPageid(int pageid) {
+    public void setPageid(String pageid) {
         this.pageid = pageid;
     }
 

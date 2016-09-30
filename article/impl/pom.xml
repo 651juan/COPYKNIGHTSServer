@@ -10,16 +10,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>article-impl</artifactId>
-
-
+    <properties>
+        <cur>F:/hack</cur>
+    </properties>
     <repositories>
         <repository>
-            <id>info-bliki-repository</id>
-            <url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <id>my-local-repo</id>
+            <url>file://${cur}/lib</url>
         </repository>
+
     </repositories>
 
     <dependencies>
@@ -28,12 +27,10 @@
             <artifactId>article-bd</artifactId>
             <version>0.1.0</version>
         </dependency>
-
-        <!-- bliki -->
         <dependency>
-            <groupId>info.bliki.wiki</groupId>
-            <artifactId>bliki-core</artifactId>
-            <version>3.1.0</version>
+            <groupId>bliki</groupId>
+            <artifactId>mod</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

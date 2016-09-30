@@ -16,18 +16,20 @@ import java.util.stream.Collectors;
  */
 public class ArticleFacadeImpl implements ArticleFacade {
 
+    String url;
     User user;
 
     public ArticleFacadeImpl(String username, String password, String url) {
+        this.url = url;
         user = new User(username, password, url);
     }
 
     public List<Article> pagesToArticles(List<Page> pages){
-        return pages.stream().map(x -> new Article(x.getTitle(), Integer.valueOf(x.getPageid()), x.getCurrentContent(), false)).collect(Collectors.toList());
+        return pages.stream().map(x -> new Article(x.getTitle(), x.getPageid(), x.getCurrentContent(), false)).collect(Collectors.toList());
     }
 
     public List<Article> pagesToShortArticles(List<Page> pages){
-        return pages.stream().map(x -> new Article(x.getTitle(), Integer.valueOf(x.getPageid()), true)).collect(Collectors.toList());
+        return pages.stream().map(x -> new Article(x.getTitle(), x.getPageid(), true)).collect(Collectors.toList());
     }
 
     @Override
@@ -46,11 +48,25 @@ public class ArticleFacadeImpl implements ArticleFacade {
         Connector c = new Connector();
         List<Page> queryResult = c.query(user, query);
         if (getContent) {
-            return pagesToArticles(user.queryContent(queryResult.stream()
-                    .map(Page::getTitle)
-                    .collect(Collectors.toList())));
+            return getFullArticles(queryResult);
         } else {
             return pagesToShortArticles(queryResult);
         }
+    }
+
+    @Override
+    public List<Article> getArticlesByCategory(String category) {
+        Query query = new Query();
+        query.list("categorymembers");
+        query.putPipedString("cmtitle", "Category:Studies");
+        query.putPipedString("continue", "");
+        Connector c = new Connector();
+        return pagesToShortArticles(c.query(user,query));
+    }
+
+    private List<Article> getFullArticles(List<Page> queryResult) {
+        return pagesToArticles(user.queryContent(queryResult.stream()
+                .map(Page::getTitle)
+                .collect(Collectors.toList())));
     }
 }

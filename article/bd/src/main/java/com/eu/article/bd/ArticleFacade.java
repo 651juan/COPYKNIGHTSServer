@@ -22,4 +22,10 @@ public interface ArticleFacade {
      */
     public List<Article> getArticlesById(String articleIds, boolean getContent);
 
+    /**
+     * Gets a @{@link List} of @{@link Article}  by searching for categories.
+     * @param categories @{@link List} of categories as a comma separated @{@link String}
+     * @return @{@link List} of @{@link Article}
+     */
+    public List<Article> getArticlesByCategory(String categories);
 }

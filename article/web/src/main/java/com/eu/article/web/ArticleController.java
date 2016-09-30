@@ -24,12 +24,17 @@ public class ArticleController {
         return facade.getArticles(titles);
     }
 
-    @RequestMapping(value="/article", params="pageids")
-    public List<Article> articleById(@RequestParam("pageids") String ids) {
+    @RequestMapping(value="/article", params={"pageids","getContent"})
+    public List<Article> articleById(@RequestParam("pageids") String ids, @RequestParam("getContent") boolean getContent) {
         initialiseFacade();
-        return facade.getArticlesById(ids);
+        return facade.getArticlesById(ids, getContent);
     }
 
+    @RequestMapping(value="/article", params="category")
+    public List<Article> articleByCategory(@RequestParam("category") String categories) {
+        initialiseFacade();
+        return facade.getArticlesByCategory(categories);
+    }
     private void initialiseFacade() {
         if (facade == null) {
             facade = new ArticleFacadeImpl("", "", URL_TO_WIKI);
