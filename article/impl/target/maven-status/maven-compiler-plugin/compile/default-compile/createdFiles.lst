@@ -1,2 +1,3 @@
 com\eu\article\impl\ArticleFacadeImpl.class
 com\eu\article\impl\ArticleParser.class
+impl\TokenType.class

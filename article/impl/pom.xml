@@ -10,13 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>article-impl</artifactId>
-    <properties>
-        <cur>F:/hack</cur>
-    </properties>
+
     <repositories>
         <repository>
             <id>my-local-repo</id>
-            <url>file://${cur}/lib</url>
+            <url>file://lib</url>
         </repository>
 
     </repositories>

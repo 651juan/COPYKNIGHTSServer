@@ -25,11 +25,12 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     public List<Article> pagesToArticles(List<Page> pages){
-        return pages.stream().map(x -> new Article(x.getTitle(), x.getPageid(), x.getCurrentContent(), false)).collect(Collectors.toList());
+        ArticleParser myParser = new ArticleParser();
+        return pages.stream().map(x -> myParser.parse(x)).collect(Collectors.toList());
     }
 
     public List<Article> pagesToShortArticles(List<Page> pages){
-        return pages.stream().map(x -> new Article(x.getTitle(), x.getPageid(), true)).collect(Collectors.toList());
+        return pages.stream().map(x -> new Article(Integer.valueOf(x.getPageid()), x.getTitle(), true)).collect(Collectors.toList());
     }
 
     @Override
