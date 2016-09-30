@@ -12,10 +12,11 @@ public class Article {
 
     public Article() {}
 
-    public Article(String t, String d, boolean s) {
+    public Article(String t, int p, String d, boolean s) {
         this.title = t;
         this.description = d;
         this.shortArticle = s;
+        this.pageid = p;
     }
 
     public Article(String t, int p, boolean s) {
