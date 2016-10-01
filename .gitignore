@@ -13,3 +13,4 @@ article/impl/target/article-impl-0.1.0.jar
 article/impl/target/maven-archiver/pom.properties
 article/web/target/article-web-0.1.0.jar
 article/web/target/maven-archiver/pom.properties
+article/bd/target/
