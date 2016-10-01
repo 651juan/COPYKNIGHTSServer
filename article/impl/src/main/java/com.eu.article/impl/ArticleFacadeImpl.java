@@ -1,6 +1,5 @@
 package com.eu.article.impl;
 
-import com.eu.article.bd.Article;
 import com.eu.article.bd.ArticleFacade;
 import com.eu.article.bd.ArticleList;
 import info.bliki.api.Connector;
@@ -29,13 +28,8 @@ public class ArticleFacadeImpl implements ArticleFacade {
         ArticleParser myParser = new ArticleParser();
         ArticleList list = new ArticleList();
         list.setArticles(queryResult.getPagesList().stream().map(myParser::parse).collect(Collectors.toList()));
-        return list;
-    }
-
-    private ArticleList pagesToShortArticles(QueryResult queryResult){
-        ArticleParser myParser = new ArticleParser();
-        ArticleList list = new ArticleList();
-        list.setArticles(queryResult.getPagesList().stream().map(myParser::parse).collect(Collectors.toList()));
+        if (queryResult.getCmcontinue() != null)
+        list.setCmContinue(queryResult.getCmcontinue());
         return list;
     }
 
@@ -57,18 +51,27 @@ public class ArticleFacadeImpl implements ArticleFacade {
         if (getContent) {
             return getFullArticles(queryResult);
         } else {
-            return pagesToShortArticles(queryResult);
+            return pagesToArticles(queryResult);
         }
     }
 
     @Override
-    public ArticleList getArticlesByCategory(String category) {
+    public ArticleList getArticlesByCategory(String category, String cmContinue, int limit, boolean getContent) {
         Query query = new Query();
         query.list("categorymembers");
         query.putPipedString("cmtitle", "Category:Studies");
+        if (!cmContinue.equals("")) {
+            query.putPipedString("cmcontinue", cmContinue);
+        }
+        query.putPipedString("cmlimit",limit);
         query.putPipedString("continue", "");
         Connector c = new Connector();
-        return pagesToShortArticles(c.query(user,query));
+        QueryResult queryResult = c.query(user, query);
+        if (getContent) {
+            return getFullArticles(queryResult);
+        } else {
+            return pagesToArticles(queryResult);
+        }
     }
 
     private ArticleList getFullArticles(QueryResult queryResult) {
