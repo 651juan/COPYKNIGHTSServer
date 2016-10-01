@@ -12,51 +12,50 @@ import java.util.List;
 /**
  * Created by Juan on 29/09/2016.
  */
-public class ArticleParser {
+class ArticleParser {
 
     private String pRawData;
 
-    public ArticleParser() {
+    ArticleParser() {
         this.pRawData = "";
     }
 
-    public Article parse(Page page) {
-        //Raw data to parse
-        this.pRawData = page.getCurrentContent();
-        //New Article
-        Article parsed = new Article(Integer.valueOf(page.getPageid()), false);
+    Article parse(Page page) {
+        Article parsed = new Article();
+        if(page.getCurrentContent() == null) {
+            parsed.setName(page.getTitle());
+            parsed.setPageid(Integer.valueOf(page.getPageid()));
+            parsed.setShortArticle(true);
+        } else {
+            this.pRawData = page.getCurrentContent();
+            parsed = new Article(Integer.valueOf(page.getPageid()), false);
 
-        //Temporarily store raw data for now
-        //parsed.setRawContent(this.pRawData);
-
-        //Get Attributes
-        parsed.setName(this.getData(TokenType.TOK_NAME_OF_STUDY));
-        parsed.setTitle(this.getData(TokenType.TOK_TITLE));
-        parsed.setAuthors(this.getAuthors());
-        parsed.setYear(Integer.valueOf(this.getData(TokenType.TOK_YEAR)));
-        parsed.setCitation(this.getData(TokenType.TOK_CITATION));
-        parsed.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
-        parsed.setLinks(this.getLinks());
-        parsed.setRefences(this.getReferences());
-
-        //Return Result
+            parsed.setName(this.getData(TokenType.TOK_NAME_OF_STUDY));
+            parsed.setTitle(this.getData(TokenType.TOK_TITLE));
+            parsed.setAuthors(this.getAuthors());
+            parsed.setYear(Integer.valueOf(this.getData(TokenType.TOK_YEAR)));
+            parsed.setCitation(this.getData(TokenType.TOK_CITATION));
+            parsed.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
+            parsed.setLinks(this.getLinks());
+            parsed.setRefences(this.getReferences());
+        }
         return parsed;
     }
 
-    public String getData(TokenType type) {
+    private String getData(TokenType type) {
         int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
         if(idx != -1)
             return this.pRawData.substring(idx, this.pRawData.indexOf('|', idx)).trim();
         return "";
     }
 
-    public String[] getAuthors() {
-        List<String> tmpResult = new ArrayList<String>();
+    private String[] getAuthors() {
+        List<String> tmpResult = new ArrayList<>();
         String rawAuthors = this.getData(TokenType.TOK_AUTHOR);
         String[] splitAuthors = rawAuthors.split(";");
 
         for(String author:splitAuthors){
-            if(author.indexOf("and") != -1) {
+            if(author.contains("and")) {
                 String[] furtherSplit = author.split("and");
                 for(String subauthor:furtherSplit) {
                     tmpResult.add(subauthor.trim());
@@ -69,8 +68,8 @@ public class ArticleParser {
         return tmpResult.toArray(new String[tmpResult.size()]);
     }
 
-    public Reference[] getReferences() {
-        List<Reference> tmpResult = new ArrayList<Reference>();
+    private Reference[] getReferences() {
+        List<Reference> tmpResult = new ArrayList<>();
         String rawReferences = this.getData(TokenType.TOK_REFERENCES);
         String[] splitReferences = rawReferences.split(";");
 
@@ -81,7 +80,7 @@ public class ArticleParser {
         return tmpResult.toArray(new Reference[tmpResult.size()]);
     }
 
-    public URL getLinks() {
+    private URL getLinks() {
         URL tmpResult = null;
         String tmp = this.getData(TokenType.TOK_LINK);
 
