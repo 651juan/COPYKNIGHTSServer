@@ -2,8 +2,10 @@ package com.eu.article.impl;
 
 import com.eu.article.bd.Article;
 import com.eu.article.bd.ArticleFacade;
+import com.eu.article.bd.ArticleList;
 import info.bliki.api.Connector;
 import info.bliki.api.Page;
+import info.bliki.api.QueryResult;
 import info.bliki.api.User;
 import info.bliki.api.query.Query;
 
@@ -16,37 +18,43 @@ import java.util.stream.Collectors;
  */
 public class ArticleFacadeImpl implements ArticleFacade {
 
-    String url;
-    User user;
+    private String url;
+    private User user;
 
     public ArticleFacadeImpl(String username, String password, String url) {
         this.url = url;
         user = new User(username, password, url);
     }
 
-    public List<Article> pagesToArticles(List<Page> pages){
-        return pages.stream().map(x -> new Article(x.getTitle(), x.getPageid(), x.getCurrentContent(), false)).collect(Collectors.toList());
+    private ArticleList pagesToArticles(QueryResult queryResult){
+        ArticleList list = new ArticleList();
+        list.setArticles(queryResult.getPagesList().stream().map(x -> new Article(x.getTitle(), x.getPageid(), x.getCurrentContent(), false)).collect(Collectors.toList()));
+        list.setCmContinue(queryResult.getCmcontinue());
+        return list;
     }
 
-    public List<Article> pagesToShortArticles(List<Page> pages){
-        return pages.stream().map(x -> new Article(x.getTitle(), x.getPageid(), true)).collect(Collectors.toList());
+    private ArticleList pagesToShortArticles(QueryResult queryResult){
+        ArticleList list = new ArticleList();
+        list.setArticles(queryResult.getPagesList().stream().map(x -> new Article(x.getTitle(), x.getPageid(), true)).collect(Collectors.toList()));
+        list.setCmContinue(queryResult.getCmcontinue());
+        return list;
     }
 
     @Override
-    public List<Article> getArticles(String articleTitles) {
+    public ArticleList getArticles(String articleTitles) {
         user.login();
         return pagesToArticles(user.queryContent(articleTitles));
     }
 
     @Override
-    public List<Article> getArticlesById(String articleIds, boolean getContent) {
+    public ArticleList getArticlesById(String articleIds, boolean getContent) {
         Query query = new Query();
         int[] pageIds = Arrays.stream(articleIds.split(","))
                 .mapToInt(Integer::valueOf)
                 .toArray();
         query.pageids(pageIds);
         Connector c = new Connector();
-        List<Page> queryResult = c.query(user, query);
+        QueryResult queryResult = c.query(user, query);
         if (getContent) {
             return getFullArticles(queryResult);
         } else {
@@ -55,7 +63,7 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     @Override
-    public List<Article> getArticlesByCategory(String category) {
+    public ArticleList getArticlesByCategory(String category) {
         Query query = new Query();
         query.list("categorymembers");
         query.putPipedString("cmtitle", "Category:Studies");
@@ -64,8 +72,8 @@ public class ArticleFacadeImpl implements ArticleFacade {
         return pagesToShortArticles(c.query(user,query));
     }
 
-    private List<Article> getFullArticles(List<Page> queryResult) {
-        return pagesToArticles(user.queryContent(queryResult.stream()
+    private ArticleList getFullArticles(QueryResult queryResult) {
+        return pagesToArticles(user.queryContent(queryResult.getPagesList().stream()
                 .map(Page::getTitle)
                 .collect(Collectors.toList())));
     }

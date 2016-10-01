@@ -10,27 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>article-impl</artifactId>
-    <properties>
-        <cur>F:/hack</cur>
-    </properties>
-    <repositories>
-        <repository>
-            <id>my-local-repo</id>
-            <url>file://${cur}/lib</url>
-        </repository>
-
-    </repositories>
 
     <dependencies>
         <dependency>
             <groupId>euHackathon</groupId>
             <artifactId>article-bd</artifactId>
             <version>0.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>bliki</groupId>
-            <artifactId>mod</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

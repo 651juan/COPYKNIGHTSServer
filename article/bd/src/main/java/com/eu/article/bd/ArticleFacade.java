@@ -12,7 +12,7 @@ public interface ArticleFacade {
      * @param articleTitles @{@link List} of page titles as a comma separated @{@link String}
      * @return @{@link List} of @{@link Article}
      */
-    public List<Article> getArticles(String articleTitles);
+    public ArticleList getArticles(String articleTitles);
 
     /**
      * Gets a @{@link List} of short @{@link Article} not including description. by searching for ids.
@@ -20,12 +20,12 @@ public interface ArticleFacade {
      * @param getContent shows if you want the content of the article
      * @return @{@link List} of @{@link Article}
      */
-    public List<Article> getArticlesById(String articleIds, boolean getContent);
+    public ArticleList getArticlesById(String articleIds, boolean getContent);
 
     /**
      * Gets a @{@link List} of @{@link Article}  by searching for categories.
      * @param categories @{@link List} of categories as a comma separated @{@link String}
      * @return @{@link List} of @{@link Article}
      */
-    public List<Article> getArticlesByCategory(String categories);
+    public ArticleList getArticlesByCategory(String categories);
 }

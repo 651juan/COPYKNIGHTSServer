@@ -10,23 +10,57 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>article-bd</artifactId>
-
+    <properties>
+        <cur>F:/hack</cur>
+    </properties>
     <repositories>
         <repository>
-            <id>info-bliki-repository</id>
-            <url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <id>my-local-repo</id>
+            <url>file://${cur}/lib</url>
         </repository>
     </repositories>
 
     <dependencies>
-        <!-- bliki -->
         <dependency>
-            <groupId>info.bliki.wiki</groupId>
-            <artifactId>bliki-core</artifactId>
-            <version>3.1.0</version>
+            <groupId>bliki</groupId>
+            <artifactId>mod</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.luaj</groupId>
+            <artifactId>luaj-jse</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
         </dependency>
     </dependencies>
 </project>
