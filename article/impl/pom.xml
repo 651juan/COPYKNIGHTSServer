@@ -17,5 +17,15 @@
             <artifactId>article-bd</artifactId>
             <version>0.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>euHackathon</groupId>
+            <artifactId>wikiApi-bd</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>euHackathon</groupId>
+            <artifactId>wikiApi-impl</artifactId>
+            <version>0.1.0</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package com.eu.article.bd;
+package com.eu.wiki.api;
 
 import java.net.MalformedURLException;
 import java.net.URL;

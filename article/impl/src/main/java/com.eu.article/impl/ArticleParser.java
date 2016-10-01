@@ -1,9 +1,9 @@
 package com.eu.article.impl;
 
-import com.eu.article.bd.Article;
-import com.eu.article.bd.Reference;
-import impl.TokenType;
-import info.bliki.api.Page;
+import com.eu.wiki.api.Article;
+import com.eu.wiki.api.Reference;
+import com.eu.article.bd.TokenType;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,15 +20,15 @@ class ArticleParser {
         this.pRawData = "";
     }
 
-    Article parse(Page page) {
+    Article parse(Article article) {
         Article parsed = new Article();
-        if(page.getCurrentContent() == null) {
-            parsed.setName(page.getTitle());
-            parsed.setPageid(Integer.valueOf(page.getPageid()));
+        if(article.getAbstract() == null) {
+            parsed.setName(article.getTitle());
+            parsed.setPageid(Integer.valueOf(article.getPageid()));
             parsed.setShortArticle(true);
         } else {
-            this.pRawData = page.getCurrentContent();
-            parsed = new Article(Integer.valueOf(page.getPageid()), false);
+            this.pRawData = article.getAbstract();
+            parsed = new Article(Integer.valueOf(article.getPageid()), false);
 
             parsed.setName(this.getData(TokenType.TOK_NAME_OF_STUDY));
             parsed.setTitle(this.getData(TokenType.TOK_TITLE));

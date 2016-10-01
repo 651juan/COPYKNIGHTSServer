@@ -1,4 +1,6 @@
-package com.eu.article.bd;
+package com.eu.wiki.api;
+
+import com.eu.wiki.api.Article;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package impl;
+package com.eu.article.bd;
 
 /**
  * Created by Admin on 30-Sep-16.
