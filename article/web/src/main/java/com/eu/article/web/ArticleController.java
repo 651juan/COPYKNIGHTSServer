@@ -2,6 +2,7 @@ package com.eu.article.web;
 
 import com.eu.article.bd.Article;
 import com.eu.article.bd.ArticleFacade;
+import com.eu.article.bd.ArticleList;
 import com.eu.article.impl.ArticleFacadeImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,19 +20,19 @@ public class ArticleController {
     ArticleFacade facade;
 
     @RequestMapping(value="/article", params="title")
-    public List<Article> articleByTitle(@RequestParam("title") String titles) {
+    public ArticleList articleByTitle(@RequestParam("title") String titles) {
         initialiseFacade();
         return facade.getArticles(titles);
     }
 
     @RequestMapping(value="/article", params={"pageids","getContent"})
-    public List<Article> articleById(@RequestParam("pageids") String ids, @RequestParam("getContent") boolean getContent) {
+    public ArticleList articleById(@RequestParam("pageids") String ids, @RequestParam("getContent") boolean getContent) {
         initialiseFacade();
         return facade.getArticlesById(ids, getContent);
     }
 
     @RequestMapping(value="/article", params="category")
-    public List<Article> articleByCategory(@RequestParam("category") String categories) {
+    public ArticleList articleByCategory(@RequestParam("category") String categories) {
         initialiseFacade();
         return facade.getArticlesByCategory(categories);
     }
