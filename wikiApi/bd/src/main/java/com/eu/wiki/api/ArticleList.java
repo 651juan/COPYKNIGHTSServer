@@ -16,6 +16,10 @@ public class ArticleList {
         articles = new ArrayList<>();
     }
 
+    public ArticleList(List<Article> articleList) {
+        this.articles = articleList;
+    }
+
     public List<Article> getArticles() {
         return articles;
     }

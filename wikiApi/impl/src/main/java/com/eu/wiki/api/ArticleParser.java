@@ -1,8 +1,4 @@
-package impl;
-
-import com.eu.wiki.api.Article;
-import com.eu.wiki.api.Reference;
-import com.eu.article.bd.TokenType;
+package com.eu.wiki.api;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,9 +16,12 @@ public class ArticleParser {
         this.pRawData = "";
     }
 
-    public Article parse(Article article) {
+    public Article parse(String toParse) {
+
         Article parsed = new Article();
-        if(article.getAbstract() == null) {
+        String tmp = "";
+
+        /*if(article.getAbstract() == null) {
             parsed.setName(article.getTitle());
             parsed.setPageid(Integer.valueOf(article.getPageid()));
             parsed.setShortArticle(true);
@@ -38,14 +37,52 @@ public class ArticleParser {
             parsed.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
             parsed.setLinks(this.getLinks());
             parsed.setRefences(this.getReferences());
+        }*/
+        //Clean Raw Data from new lines
+        this.pRawData = toParse.replaceAll("\\\\n", "");
+
+        //Get Header Data
+        tmp = this.getHeaderData(TokenType.TOK_HEAD_PAGEID);
+        if (tmp.equalsIgnoreCase("")) {
+            parsed.setPageid(-1);
+        } else {
+            parsed.setPageid(Integer.valueOf(tmp));
         }
+
+
+        //Get Content Data
+        parsed.setName(this.getData(TokenType.TOK_NAME_OF_STUDY));
+        parsed.setTitle(this.getData(TokenType.TOK_TITLE));
+        parsed.setAuthors(this.getAuthors());
+        parsed.setCitation(this.getData(TokenType.TOK_CITATION));
+        parsed.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
+        parsed.setLinks(this.getLinks());
+        parsed.setRefences(this.getReferences());
+
+        tmp = this.getData(TokenType.TOK_YEAR);
+        if (tmp.equalsIgnoreCase("")) {
+            parsed.setYear(-1);
+        } else {
+            parsed.setYear(Integer.valueOf(tmp));
+        }
+
+
         return parsed;
+    }
+
+    private String getHeaderData(TokenType type) {
+        int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
+        if(idx != -1) {
+            return this.pRawData.substring(idx, this.pRawData.indexOf(',', idx)).trim();
+        }
+        return "";
     }
 
     private String getData(TokenType type) {
         int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
-        if(idx != -1)
+        if(idx != -1) {
             return this.pRawData.substring(idx, this.pRawData.indexOf('|', idx)).trim();
+        }
         return "";
     }
 

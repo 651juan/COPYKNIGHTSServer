@@ -4,7 +4,7 @@ package com.eu.wiki.api;
  * Created by Juan on 01/10/2016.
  */
 public interface QueryFacade {
-    String TITLE_ID = "title=";
+    String TITLE_ID = "titles=";
     String PAGES_ID = "pageids=";
     String LIST_ID = "list=";
     String CMTITLE_ID = "cmtitle=";

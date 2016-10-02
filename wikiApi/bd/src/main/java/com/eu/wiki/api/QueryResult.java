@@ -14,6 +14,10 @@ public class QueryResult {
         this.pagesList = new ArrayList<>();
     }
 
+    public QueryResult(List<Article> articleList) {
+        this.pagesList = articleList;
+    }
+
     public List<Article> getPagesList() {
         return pagesList;
     }

@@ -21,9 +21,10 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     private ArticleList resultToArticles(QueryResult queryResult){
-        ArticleParser myParser = new ArticleParser();
+        //ArticleParser myParser = new ArticleParser();
         ArticleList list = new ArticleList();
-        list.setArticles(queryResult.getPagesList().stream().map(myParser::parse).collect(Collectors.toList()));
+        list.setArticles(queryResult.getPagesList());
+        //list.setArticles(queryResult.getPagesList().stream().map(myParser::parse).collect(Collectors.toList()));
         if (queryResult.getCmcontinue() != null)
         list.setCmContinue(queryResult.getCmcontinue());
         return list;

@@ -7,7 +7,9 @@ import com.sun.jersey.api.client.WebResource;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -86,22 +88,29 @@ public class QueryFacadeImpl implements QueryFacade {
         if (q.isNcontinue()) {
             workingUrl.append(CONTINUE_ID);
         }
+        //Temp fix to get all content
+        workingUrl.append("prop=revisions&rvprop=content&");
         workingUrl.append(FORMAT_ID);
         workingUrl.append(Query.FORMAT);
         return workingUrl.toString().endsWith("&") ? workingUrl.toString().substring(workingUrl.toString().length()-2) : workingUrl.toString();
     }
 
     private QueryResult parseResult(String raw) {
-        Map<String,String> myMap = new HashMap<>();
-
+        /*Map<String,String> myMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             myMap = objectMapper.readValue(raw, HashMap.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        QueryResult queryResult = new QueryResult();
-        //TODO parse responce.
-        return new QueryResult();
+        QueryResult queryResult = new QueryResult();*/
+
+        //Kelli mmexi article parser al hdejn queryfacadeimpl ax ma bedix isibomli blebda tip ta imports li nuza
+        List<Article> parsedResults = new ArrayList<>();
+        ArticleParser myParser = new ArticleParser();
+
+        parsedResults.add(myParser.parse(raw));
+
+        return new QueryResult(parsedResults);
     }
 }
