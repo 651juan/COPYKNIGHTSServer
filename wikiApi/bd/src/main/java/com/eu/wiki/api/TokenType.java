@@ -4,9 +4,16 @@ package com.eu.wiki.api;
  * Created by Admin on 30-Sep-16.
  */
 public enum TokenType {
-    TOK_HEAD_PAGEID("\"pageid\""),
-    TOK_HEAD_TITLE("\"title\""),
+    TOK_HEAD_QUERY("query"),
+    TOK_HEAD_PAGES("pages"),
+    TOK_HEAD_NS("ns"),
+    TOK_HEAD_PAGEID("pageid"),
+    TOK_HEAD_TITLE("title"),
+    TOK_HEAD_REVISIONS("revisions"),
 
+    TOK_CONTENT_FORMAT("contentformat"),
+    TOK_CONTENT_MODEL("contentmodel"),
+    TOK_CONTENT("*"),
     TOK_NAME_OF_STUDY("Name of Study"),
     TOK_AUTHOR("Author"),
     TOK_TITLE("Title"),

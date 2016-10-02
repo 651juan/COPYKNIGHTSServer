@@ -7,10 +7,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -96,21 +93,64 @@ public class QueryFacadeImpl implements QueryFacade {
     }
 
     private QueryResult parseResult(String raw) {
-        /*Map<String,String> myMap = new HashMap<>();
+        Map<String,Object> myMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
+
         try {
             myMap = objectMapper.readValue(raw, HashMap.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        QueryResult queryResult = new QueryResult();*/
 
-        //Kelli mmexi article parser al hdejn queryfacadeimpl ax ma bedix isibomli blebda tip ta imports li nuza
+        myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_QUERY.getTokenValue());
+        if(myMap != null) {
+            myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_PAGES.getTokenValue());
+            if(myMap != null) {
+                //Get first entry in linked hash map should be pageid (cant access it by .getKey() different for every query)
+                String pageIDAsKey = myMap.entrySet().iterator().next().getKey();
+                int pageID = Integer.valueOf(pageIDAsKey);
+                if(pageID < 0) {
+                    //Article is Missing
+                    return new QueryResult();
+                }
+                //Assume its a short article
+                Article myArticle = new Article(pageID, true);
+                myMap = (LinkedHashMap<String, Object>) myMap.get(pageIDAsKey);
+                if(myMap != null) {
+                    String ns = myMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
+                    String title = myMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
+                    myArticle.setName(title);
+
+                    myMap = (LinkedHashMap<String, Object>) ((ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_REVISIONS.getTokenValue())).get(0);
+
+                    if (myMap != null) {
+                        List<Article> parsedResults = new ArrayList<>();
+
+                        String contentFormat = myMap.get(TokenType.TOK_CONTENT_FORMAT.getTokenValue()).toString();
+                        String contentModel = myMap.get(TokenType.TOK_CONTENT_MODEL.getTokenValue()).toString();
+                        String rawContent = myMap.get(TokenType.TOK_CONTENT.getTokenValue()).toString().replaceAll("\\n", "");
+
+                        if(rawContent != null || rawContent.equalsIgnoreCase("")) {
+                            ArticleParser myParser = new ArticleParser();
+                            myArticle.setRawContent(rawContent);
+                            myArticle = myParser.parse(myArticle);
+                            myArticle.setShortArticle(false);
+                        }
+
+                        parsedResults.add(myArticle);
+                        return new QueryResult(parsedResults);
+                    }
+                }
+            }
+        }
+
+       /* Old version directly pass full raw to parser
         List<Article> parsedResults = new ArrayList<>();
         ArticleParser myParser = new ArticleParser();
 
         parsedResults.add(myParser.parse(raw));
 
-        return new QueryResult(parsedResults);
+        return new QueryResult(parsedResults);*/
+        return new QueryResult();
     }
 }

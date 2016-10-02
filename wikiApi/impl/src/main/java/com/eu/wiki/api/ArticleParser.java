@@ -16,6 +16,32 @@ public class ArticleParser {
         this.pRawData = "";
     }
 
+    public Article parse(Article shortArticle) {
+
+        String tmp = "";
+
+        this.pRawData = shortArticle.getRawContent();
+
+        shortArticle.setTitle(this.getData(TokenType.TOK_TITLE));
+        shortArticle.setAuthors(this.getAuthors());
+        shortArticle.setCitation(this.getData(TokenType.TOK_CITATION));
+        shortArticle.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
+        shortArticle.setLinks(this.getLinks());
+        shortArticle.setRefences(this.getReferences());
+
+        tmp = this.getData(TokenType.TOK_YEAR);
+        if (tmp.equalsIgnoreCase("")) {
+            shortArticle.setYear(-1);
+        } else {
+            shortArticle.setYear(Integer.valueOf(tmp));
+        }
+
+        //Remove raw data
+        shortArticle.setRawContent("");
+
+        return shortArticle;
+    }
+
     public Article parse(String toParse) {
 
         Article parsed = new Article();
