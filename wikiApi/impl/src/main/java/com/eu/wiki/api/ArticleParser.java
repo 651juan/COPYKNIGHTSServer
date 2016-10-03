@@ -108,47 +108,16 @@ public class ArticleParser {
             e.printStackTrace();
         }
 
+
         myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_QUERY.getTokenValue());
         if(myMap != null) {
-            myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_PAGES.getTokenValue());
-            if(myMap != null) {
-                //Get first entry in linked hash map should be pageid (cant access it by .getKey() different for every query)
-                String pageIDAsKey = myMap.entrySet().iterator().next().getKey();
-                int pageID = Integer.valueOf(pageIDAsKey);
-                if(pageID < 0) {
-                    //Article is Missing
-                    return new QueryResult();
-                }
-                //Assume its a short article
-                Article myArticle = new Article(pageID, true);
-                myMap = (LinkedHashMap<String, Object>) myMap.get(pageIDAsKey);
-                if(myMap != null) {
-                    String ns = myMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
-                    String title = myMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
-                    myArticle.setName(title);
-
-                    myMap = (LinkedHashMap<String, Object>) ((ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_REVISIONS.getTokenValue())).get(0);
-
-                    if (myMap != null) {
-                        List<Article> parsedResults = new ArrayList<>();
-
-                        String contentFormat = myMap.get(TokenType.TOK_CONTENT_FORMAT.getTokenValue()).toString();
-                        String contentModel = myMap.get(TokenType.TOK_CONTENT_MODEL.getTokenValue()).toString();
-                        String rawContent = myMap.get(TokenType.TOK_CONTENT.getTokenValue()).toString().replaceAll("\\n", "");
-
-                        if(rawContent != null || rawContent.equalsIgnoreCase("")) {
-                            ArticleParser myParser = new ArticleParser();
-                            myArticle.setRawContent(rawContent);
-                            myArticle = myParser.parse(myArticle);
-                            myArticle.setShortArticle(false);
-                        }
-
-                        parsedResults.add(myArticle);
-                        return new QueryResult(parsedResults);
-                    }
-                }
+            if (myMap.containsKey(TokenType.TOK_HEAD_PAGES.getTokenValue())) {
+                return this.parsePages(myMap);
+            } else if (myMap.containsKey(TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue())) {
+                return this.parseCategory(myMap);
             }
         }
+
 
        /* Old version directly pass full raw to parser
         List<Article> parsedResults = new ArrayList<>();
@@ -160,6 +129,69 @@ public class ArticleParser {
         return new QueryResult();
     }
 
+    private QueryResult parsePages(Map<String,Object> myMap){
+        myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_PAGES.getTokenValue());
+        if(myMap != null) {
+            //Get first entry in linked hash map should be pageid (cant access it by .getKey() different for every query)
+            String pageIDAsKey = myMap.entrySet().iterator().next().getKey();
+            int pageID = Integer.valueOf(pageIDAsKey);
+            if(pageID < 0) {
+                //Article is Missing
+                return new QueryResult();
+            }
+            //Assume its a short article
+            Article myArticle = new Article(pageID, true);
+            myMap = (LinkedHashMap<String, Object>) myMap.get(pageIDAsKey);
+            if(myMap != null) {
+                String ns = myMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
+                String title = myMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
+                myArticle.setName(title);
+
+                myMap = (LinkedHashMap<String, Object>) ((ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_REVISIONS.getTokenValue())).get(0);
+
+                if (myMap != null) {
+                    List<Article> parsedResults = new ArrayList<>();
+
+                    String contentFormat = myMap.get(TokenType.TOK_CONTENT_FORMAT.getTokenValue()).toString();
+                    String contentModel = myMap.get(TokenType.TOK_CONTENT_MODEL.getTokenValue()).toString();
+                    String rawContent = myMap.get(TokenType.TOK_CONTENT.getTokenValue()).toString().replaceAll("\\n", "");
+
+                    if(rawContent != null || rawContent.equalsIgnoreCase("")) {
+                        ArticleParser myParser = new ArticleParser();
+                        myArticle.setRawContent(rawContent);
+                        myArticle = myParser.parse(myArticle);
+                        myArticle.setShortArticle(false);
+                    }
+
+                    parsedResults.add(myArticle);
+                    return new QueryResult(parsedResults);
+                }
+            }
+        }
+
+        //Let parseresult handle null and return warnings
+        return null;
+    }
+
+    private QueryResult parseCategory(Map<String,Object> myMap){
+        List<Object> results = (ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue());
+        if(results != null) {
+            List<Article> parsedResults = new ArrayList<>();
+
+            for(int i = 0; i < results.size(); i++) {
+                myMap = (LinkedHashMap<String, Object>) results.get(i);
+                int pageID = Integer.valueOf(myMap.get(TokenType.TOK_HEAD_PAGEID.getTokenValue()).toString());
+                String ns = myMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
+                String title = myMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
+                parsedResults.add(new Article(pageID,title,true));
+            }
+
+            return new QueryResult(parsedResults);
+        }
+
+        //Let parseresult handle null and return warnings
+        return null;
+    }
 
     private String getHeaderData(TokenType type) {
         int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;

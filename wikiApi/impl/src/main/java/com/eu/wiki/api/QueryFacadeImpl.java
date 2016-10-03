@@ -1,13 +1,8 @@
 package com.eu.wiki.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.*;
 import java.util.stream.Collectors;
 
 /**

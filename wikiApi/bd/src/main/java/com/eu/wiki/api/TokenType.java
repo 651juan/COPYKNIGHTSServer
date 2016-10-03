@@ -6,6 +6,7 @@ package com.eu.wiki.api;
 public enum TokenType {
     TOK_HEAD_QUERY("query"),
     TOK_HEAD_PAGES("pages"),
+    TOK_HEAD_CATEGORY_MEMBERS("categorymembers"),
     TOK_HEAD_NS("ns"),
     TOK_HEAD_PAGEID("pageid"),
     TOK_HEAD_TITLE("title"),
