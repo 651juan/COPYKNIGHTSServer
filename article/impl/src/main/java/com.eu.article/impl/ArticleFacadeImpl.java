@@ -72,9 +72,13 @@ public class ArticleFacadeImpl implements ArticleFacade {
 
     private ArticleList getFullArticles(QueryResult queryResult) {
         Query q = new Query();
-        q.setTitles(queryResult.getPagesList().stream()
-                .map(Article::getTitle)
-                .collect(Collectors.toList()));
-        return resultToArticles(facade.query(q));
+        if (queryResult.getPagesList().size() > 0) {
+            q.setTitles(queryResult.getPagesList().stream()
+                    .map(Article::getTitle)
+                    .collect(Collectors.toList()));
+            return resultToArticles(facade.query(q));
+        } else {
+            return null;
+        }
     }
 }

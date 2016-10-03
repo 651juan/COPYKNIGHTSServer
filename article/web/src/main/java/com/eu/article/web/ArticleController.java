@@ -23,13 +23,17 @@ public class ArticleController {
     }
 
     @RequestMapping(value="/article", params={"pageids","getContent"})
-    public ArticleList articleById(@RequestParam("pageids") String ids, @RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
+    public ArticleList articleById(@RequestParam("pageids") String ids,
+                                   @RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
         initialiseFacade();
         return facade.getArticlesById(ids, getContent);
     }
 
     @RequestMapping(value="/article", params={"category", "cmContinue", "limit","getContent"})
-    public ArticleList articleByCategory(@RequestParam("category") String categories, @RequestParam(value="cmContinue",defaultValue = "") String cmContinue, @RequestParam(value="limit",defaultValue="10") int limit, @RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
+    public ArticleList articleByCategory(@RequestParam("category") String categories,
+                                         @RequestParam(value="cmContinue",defaultValue = "") String cmContinue,
+                                         @RequestParam(value="limit",defaultValue="10") int limit,
+                                         @RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
         initialiseFacade();
         return facade.getArticlesByCategory(categories, cmContinue, limit,getContent);
     }
