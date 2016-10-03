@@ -14,3 +14,6 @@ article/impl/target/maven-archiver/pom.properties
 article/web/target/article-web-0.1.0.jar
 article/web/target/maven-archiver/pom.properties
 article/bd/target/
+wikiApi/bd/target/wikiApi-bd-0.1.0.jar
+wikiApi/bd/target/
+wikiApi/impl/target/
