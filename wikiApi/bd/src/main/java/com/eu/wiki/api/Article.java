@@ -16,7 +16,7 @@ public class Article {
     private URL aLink;
     private Reference[] aRefences;
     private String aRawContent;
-    //TODO: Data object
+    private Datasets aDatasets;
     // When true artle only contains title and pageid
     private boolean aShortArticle;
 
@@ -123,5 +123,13 @@ public class Article {
 
     public void setShortArticle(boolean shortArticle) {
         this.aShortArticle = shortArticle;
+    }
+
+    public Datasets getDatasets() {
+        return aDatasets;
+    }
+
+    public void setDatasets(Datasets datasets) {
+        this.aDatasets = datasets;
     }
 }

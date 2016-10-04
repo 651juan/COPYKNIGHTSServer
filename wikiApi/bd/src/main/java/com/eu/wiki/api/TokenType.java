@@ -23,7 +23,15 @@ public enum TokenType {
     TOK_ABSTRACT("Abstract"),
     TOK_REFERENCES("Reference"),
     TOK_PLAINTEXT_PROPOSITION("Plain Text Proposition"),
-    TOK_LINK("Authentic Link");
+    TOK_LINK("Authentic Link"),
+
+    TOK_DAT_DATASET("Dataset"),
+    TOK_DAT_DESCRIPTION("Description of Data"),
+    TOK_DAT_YEAR("Data Year"),
+    TOK_DAT_TYPE("Data Type"),
+    TOK_DAT_SAMPLE_SIZE("Sample Size"),
+    TOK_DAT_LOG("Level of Aggregation"),
+    TOK_DAT_DMY("Data Material Year");
 
     private final String tokenValue;
 

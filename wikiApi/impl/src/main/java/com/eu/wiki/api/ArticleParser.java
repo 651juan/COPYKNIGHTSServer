@@ -147,7 +147,16 @@ public class ArticleParser {
         shortArticle.setLinks(this.getLinks());
         shortArticle.setRefences(this.getReferences());
 
-
+        //Start parsing datasets
+        if(this.checkDataset()) {
+            Datasets myDatasets;
+            String dataDescription = this.getData(TokenType.TOK_DAT_DESCRIPTION);
+            String dataYear = this.getData(TokenType.TOK_DAT_YEAR);
+            String dataType = this.getData(TokenType.TOK_DAT_TYPE);
+            myDatasets = new Datasets(dataDescription, dataYear, dataType);
+            myDatasets.setDatasets(this.getDatasets());
+            shortArticle.setDatasets(myDatasets);
+        }
         //Remove raw data
         shortArticle.setRawContent("");
 
@@ -224,6 +233,7 @@ public class ArticleParser {
      * @return URL[]
      */
     private URL getLinks() {
+        //TODO Normalise links to avoid Malformed URL
         URL tmpResult = null;
         String tmp = this.getData(TokenType.TOK_LINK);
 
@@ -237,5 +247,71 @@ public class ArticleParser {
         }
 
         return tmpResult;
+    }
+
+    private boolean checkDataset() {
+        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
+        if(idx != -1) {
+            String checkDatasetContent = this.pRawData.substring(idx, this.pRawData.indexOf("}}", idx)).trim();
+            if(!checkDatasetContent.equalsIgnoreCase("")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the dataset objects
+     * @return
+     */
+    private Dataset[] getDatasets() {
+        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
+        if(idx != -1) {
+            String rawDatasetData = this.pRawData.substring(idx, this.pRawData.indexOf("}}}}", idx)+2).trim();
+            String[] rawDatasets = rawDatasetData.split("\\}\\}\\{\\{");
+
+            Dataset[] result = new Dataset[rawDatasets.length];
+
+            for(int i = 0; i < rawDatasets.length; i++){
+                if(rawDatasets[i].startsWith("{{")){
+                    rawDatasets[i] = rawDatasets[i].substring(2);
+                }
+                if(rawDatasets[i].endsWith("}}")){
+                    rawDatasets[i] = rawDatasets[i].substring(0,rawDatasets[i].length()-2);
+                }
+
+                int datasetSize = -1;
+
+                try {
+                    datasetSize = Integer.valueOf(this.getDatasetData(TokenType.TOK_DAT_SAMPLE_SIZE, rawDatasets[i]));
+                }catch(Exception e) {
+                    datasetSize = -1;
+                }
+                String loa = this.getDatasetData(TokenType.TOK_DAT_LOG, rawDatasets[i]);
+                String dmy = this.getDatasetData(TokenType.TOK_DAT_DMY, rawDatasets[i]);
+
+                Dataset tmp = new Dataset(datasetSize, loa, dmy);
+
+                result[i] = tmp;
+            }
+
+            return result;
+        }
+
+
+        return null;
+    }
+
+    private String getDatasetData(TokenType type, String rawData) {
+        int idx = rawData.indexOf(type.getTokenValue()) + type.getValueLength() + 1;
+        if (idx != -1) {
+            if (type == TokenType.TOK_DAT_DMY) {
+                return rawData.substring(idx, rawData.length()).trim();
+            } else {
+                return rawData.substring(idx, rawData.indexOf('|', idx)).trim();
+            }
+
+        }
+        return "";
     }
 }
