@@ -10,7 +10,7 @@ public class Article {
     private String aName;
     private String aTitle;
     private String[] aAuthors;
-    private int aYear;
+    private String aYear; //Needed When year is "Working Paper"
     private String aCitation;
     private String aAbstract;
     private URL aLink;
@@ -69,11 +69,11 @@ public class Article {
         this.aAuthors = authors;
     }
 
-    public int getYear() {
+    public String getYear() {
         return aYear;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.aYear = year;
     }
 

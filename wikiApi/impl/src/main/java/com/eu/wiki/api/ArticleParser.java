@@ -1,7 +1,6 @@
 package com.eu.wiki.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,93 +10,22 @@ import java.util.*;
  * Created by Juan on 29/09/2016.
  */
 public class ArticleParser {
-
+    //Attributes
     private String pRawData;
 
+    //Constructors
+    /**
+     * Initialises the ArticleParser and its attributes
+     */
     public ArticleParser() {
         this.pRawData = "";
     }
 
-    public Article parse(Article shortArticle) {
-
-        String tmp = "";
-
-        this.pRawData = shortArticle.getRawContent();
-
-        shortArticle.setTitle(this.getData(TokenType.TOK_TITLE));
-        shortArticle.setAuthors(this.getAuthors());
-        shortArticle.setCitation(this.getData(TokenType.TOK_CITATION));
-        shortArticle.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
-        shortArticle.setLinks(this.getLinks());
-        shortArticle.setRefences(this.getReferences());
-
-        tmp = this.getData(TokenType.TOK_YEAR);
-        if (tmp.equalsIgnoreCase("")) {
-            shortArticle.setYear(-1);
-        } else {
-            shortArticle.setYear(Integer.valueOf(tmp));
-        }
-
-        //Remove raw data
-        shortArticle.setRawContent("");
-
-        return shortArticle;
-    }
-
-    public Article parse(String toParse) {
-
-        Article parsed = new Article();
-        String tmp = "";
-
-        /*if(article.getAbstract() == null) {
-            parsed.setName(article.getTitle());
-            parsed.setPageid(Integer.valueOf(article.getPageid()));
-            parsed.setShortArticle(true);
-        } else {
-            this.pRawData = article.getAbstract();
-            parsed = new Article(Integer.valueOf(article.getPageid()), false);
-
-            parsed.setName(this.getData(TokenType.TOK_NAME_OF_STUDY));
-            parsed.setTitle(this.getData(TokenType.TOK_TITLE));
-            parsed.setAuthors(this.getAuthors());
-            parsed.setYear(Integer.valueOf(this.getData(TokenType.TOK_YEAR)));
-            parsed.setCitation(this.getData(TokenType.TOK_CITATION));
-            parsed.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
-            parsed.setLinks(this.getLinks());
-            parsed.setRefences(this.getReferences());
-        }*/
-        //Clean Raw Data from new lines
-        this.pRawData = toParse.replaceAll("\\\\n", "");
-
-        //Get Header Data
-        tmp = this.getHeaderData(TokenType.TOK_HEAD_PAGEID);
-        if (tmp.equalsIgnoreCase("")) {
-            parsed.setPageid(-1);
-        } else {
-            parsed.setPageid(Integer.valueOf(tmp));
-        }
-
-
-        //Get Content Data
-        parsed.setName(this.getData(TokenType.TOK_NAME_OF_STUDY));
-        parsed.setTitle(this.getData(TokenType.TOK_TITLE));
-        parsed.setAuthors(this.getAuthors());
-        parsed.setCitation(this.getData(TokenType.TOK_CITATION));
-        parsed.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
-        parsed.setLinks(this.getLinks());
-        parsed.setRefences(this.getReferences());
-
-        tmp = this.getData(TokenType.TOK_YEAR);
-        if (tmp.equalsIgnoreCase("")) {
-            parsed.setYear(-1);
-        } else {
-            parsed.setYear(Integer.valueOf(tmp));
-        }
-
-
-        return parsed;
-    }
-
+    /**
+     * Main parsing function checks checks the form of the raw data weather it is of the form of categories or pages
+     * @param raw
+     * @return QueryResult
+     */
     public QueryResult parseResult(String raw) {
         Map<String,Object> myMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -118,61 +46,67 @@ public class ArticleParser {
             }
         }
 
-
-       /* Old version directly pass full raw to parser
-        List<Article> parsedResults = new ArrayList<>();
-        ArticleParser myParser = new ArticleParser();
-
-        parsedResults.add(myParser.parse(raw));
-
-        return new QueryResult(parsedResults);*/
         return new QueryResult();
     }
 
+    //Private Methods
+    /**
+     * Parses raw data when it contains page info and content
+     * @param myMap
+     * @return QueryResult
+     */
     private QueryResult parsePages(Map<String,Object> myMap){
         myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_PAGES.getTokenValue());
         if(myMap != null) {
-            //Get first entry in linked hash map should be pageid (cant access it by .getKey() different for every query)
-            String pageIDAsKey = myMap.entrySet().iterator().next().getKey();
-            int pageID = Integer.valueOf(pageIDAsKey);
-            if(pageID < 0) {
-                //Article is Missing
-                return new QueryResult();
-            }
-            //Assume its a short article
-            Article myArticle = new Article(pageID, true);
-            myMap = (LinkedHashMap<String, Object>) myMap.get(pageIDAsKey);
-            if(myMap != null) {
-                String ns = myMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
-                String title = myMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
-                myArticle.setName(title);
+            List<Article> parsedResults = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : myMap.entrySet()) {
+                int pageID = -1;
+                try {
+                    pageID = Integer.valueOf(entry.getKey());
+                }catch(Exception e) {
+                    //TODO Generate bad id warning here
+                    return new QueryResult();
+                }
 
-                myMap = (LinkedHashMap<String, Object>) ((ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_REVISIONS.getTokenValue())).get(0);
+                //Assume its a short article
+                Article myArticle = new Article(pageID, true);
 
-                if (myMap != null) {
-                    List<Article> parsedResults = new ArrayList<>();
+                LinkedHashMap<String, Object> tmpMap = (LinkedHashMap<String, Object>) myMap.get(entry.getKey());
+                if (tmpMap != null) {
+                    String ns = tmpMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
+                    String title = tmpMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
+                    myArticle.setName(title);
 
-                    String contentFormat = myMap.get(TokenType.TOK_CONTENT_FORMAT.getTokenValue()).toString();
-                    String contentModel = myMap.get(TokenType.TOK_CONTENT_MODEL.getTokenValue()).toString();
-                    String rawContent = myMap.get(TokenType.TOK_CONTENT.getTokenValue()).toString().replaceAll("\\n", "");
+                    tmpMap = (LinkedHashMap<String, Object>) ((ArrayList<Object>) tmpMap.get(TokenType.TOK_HEAD_REVISIONS.getTokenValue())).get(0);
 
-                    if(rawContent != null || rawContent.equalsIgnoreCase("")) {
-                        ArticleParser myParser = new ArticleParser();
-                        myArticle.setRawContent(rawContent);
-                        myArticle = myParser.parse(myArticle);
-                        myArticle.setShortArticle(false);
+                    if (tmpMap != null) {
+                        String contentFormat = tmpMap.get(TokenType.TOK_CONTENT_FORMAT.getTokenValue()).toString();
+                        String contentModel = tmpMap.get(TokenType.TOK_CONTENT_MODEL.getTokenValue()).toString();
+                        String rawContent = tmpMap.get(TokenType.TOK_CONTENT.getTokenValue()).toString().replaceAll("\\n", "");
+
+                        if (rawContent != null || rawContent.equalsIgnoreCase("")) {
+                            ArticleParser myParser = new ArticleParser();
+                            myArticle.setRawContent(rawContent);
+                            myArticle = myParser.parse(myArticle);
+                            myArticle.setShortArticle(false);
+                        }
+
+                        parsedResults.add(myArticle);
                     }
-
-                    parsedResults.add(myArticle);
-                    return new QueryResult(parsedResults);
                 }
             }
+            return new QueryResult(parsedResults);
         }
 
-        //Let parseresult handle null and return warnings
+        //Let parseRsult handle null and return warnings
         return null;
     }
 
+    /**
+     * Parses raw data when its of the form of categories
+     * @param myMap
+     * @return QueryResult
+     */
     private QueryResult parseCategory(Map<String,Object> myMap){
         List<Object> results = (ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue());
         if(results != null) {
@@ -189,10 +123,42 @@ public class ArticleParser {
             return new QueryResult(parsedResults);
         }
 
-        //Let parseresult handle null and return warnings
+        //Let parseResult handle null and return warnings
         return null;
     }
 
+    /**
+     * Parses raw data which must be assigned to the raw data attribute of the Article object
+     * @param shortArticle
+     * @return Article
+     */
+    private Article parse(Article shortArticle) {
+
+        String tmp = "";
+
+        this.pRawData = shortArticle.getRawContent();
+
+        //Start parsing
+        shortArticle.setYear(this.getData(TokenType.TOK_YEAR));
+        shortArticle.setTitle(this.getData(TokenType.TOK_TITLE));
+        shortArticle.setAuthors(this.getAuthors());
+        shortArticle.setCitation(this.getData(TokenType.TOK_CITATION));
+        shortArticle.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
+        shortArticle.setLinks(this.getLinks());
+        shortArticle.setRefences(this.getReferences());
+
+
+        //Remove raw data
+        shortArticle.setRawContent("");
+
+        return shortArticle;
+    }
+
+    /**
+     * Given a TokenType tries to find the token in the header of the raw data
+     * @param type
+     * @return String
+     */
     private String getHeaderData(TokenType type) {
         int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
         if(idx != -1) {
@@ -201,6 +167,11 @@ public class ArticleParser {
         return "";
     }
 
+    /**
+     * Given a TokenType tries to find the token in the body of the raw data
+     * @param type
+     * @return String
+     */
     private String getData(TokenType type) {
         int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
         if(idx != -1) {
@@ -209,6 +180,10 @@ public class ArticleParser {
         return "";
     }
 
+    /**
+     * Returns the Authors as an array of type String of the Article
+     * @return String[]
+     */
     private String[] getAuthors() {
         List<String> tmpResult = new ArrayList<>();
         String rawAuthors = this.getData(TokenType.TOK_AUTHOR);
@@ -228,6 +203,10 @@ public class ArticleParser {
         return tmpResult.toArray(new String[tmpResult.size()]);
     }
 
+    /**
+     * Returns the references of the Article as an Array of Reference objects
+     * @return Reference[]
+     */
     private Reference[] getReferences() {
         List<Reference> tmpResult = new ArrayList<>();
         String rawReferences = this.getData(TokenType.TOK_REFERENCES);
@@ -240,6 +219,10 @@ public class ArticleParser {
         return tmpResult.toArray(new Reference[tmpResult.size()]);
     }
 
+    /**
+     * Returns all the links where the article can be found online as an Array of URLS
+     * @return URL[]
+     */
     private URL getLinks() {
         URL tmpResult = null;
         String tmp = this.getData(TokenType.TOK_LINK);
