@@ -239,16 +239,16 @@ public class ArticleParser {
 
 
         if(!tmp.equalsIgnoreCase("")){
-            try {
-                tmpResult = new URL(tmp);
-            } catch (MalformedURLException e) {
-                System.err.println("Malformed URL: " + tmp);
-            }
+            tmpResult = this.normaliseURL(tmp);
         }
 
         return tmpResult;
     }
 
+    /**
+     * Checks if the raw data contains dataset information
+     * @return true if the dataset has dataset information false otherwise
+     */
     private boolean checkDataset() {
         int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
         if(idx != -1) {
@@ -302,6 +302,12 @@ public class ArticleParser {
         return null;
     }
 
+    /**
+     * Obtains the data from the short datasets
+     * @param type the token type of the data to obtain
+     * @param rawData the raw dataset data
+     * @return String
+     */
     private String getDatasetData(TokenType type, String rawData) {
         int idx = rawData.indexOf(type.getTokenValue()) + type.getValueLength() + 1;
         if (idx != -1) {
@@ -313,5 +319,23 @@ public class ArticleParser {
 
         }
         return "";
+    }
+
+    /**
+     * Normalises URL strings to avoid malformed url exceptions
+     * @param toNormalise the url string to normalise
+     * @return the normalised url
+     */
+    private URL normaliseURL(String toNormalise) {
+        if(!(toNormalise.startsWith("http://") || toNormalise.startsWith("https://"))){
+            toNormalise = "http://" + toNormalise;
+        }
+
+        try {
+            return new URL(toNormalise);
+        } catch (MalformedURLException e) {
+            System.err.println("Malformed URL: " + toNormalise);
+            return null;
+        }
     }
 }
