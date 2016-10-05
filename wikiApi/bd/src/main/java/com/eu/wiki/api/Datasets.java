@@ -8,6 +8,15 @@ public class Datasets {
     private String dDescription;
     private String dYear;
     private String dType;
+    private String dMethodOfCollection;
+    private String dMethodOfAnalysis;
+    private String dIndustry;
+    private String dCountry;
+    private String dCrossCountry;
+    private String dComparative;
+    private String dGovernmentOrPolicy;
+    private String dLiteratureReview;
+    private String dFundedBy;
     private Dataset[] dDatasets;
 
     //Constructor
@@ -53,6 +62,78 @@ public class Datasets {
 
     public void setDatasets(Dataset[] datasets) {
         this.dDatasets = datasets;
+    }
+
+    public String getMethodOfCollection() {
+        return dMethodOfCollection;
+    }
+
+    public void setMethodOfCollection(String methodOfCollection) {
+        this.dMethodOfCollection = methodOfCollection;
+    }
+
+    public String getMethodOfAnalysis() {
+        return dMethodOfAnalysis;
+    }
+
+    public void setMethodOfAnalysis(String methodOfAnalysis) {
+        this.dMethodOfAnalysis = methodOfAnalysis;
+    }
+
+    public String getIndustry() {
+        return dIndustry;
+    }
+
+    public void setIndustry(String industry) {
+        this.dIndustry = industry;
+    }
+
+    public String getCountry() {
+        return dCountry;
+    }
+
+    public void setCountry(String country) {
+        this.dCountry = country;
+    }
+
+    public String getCrossCountry() {
+        return dCrossCountry;
+    }
+
+    public void setCrossCountry(String crossCountry) {
+        this.dCrossCountry = crossCountry;
+    }
+
+    public String getComparative() {
+        return dComparative;
+    }
+
+    public void setComparative(String comparative) {
+        this.dComparative = comparative;
+    }
+
+    public String getGovernmentOrPolicy() {
+        return dGovernmentOrPolicy;
+    }
+
+    public void setGovernmentOrPolicy(String governmentOrPolicy) {
+        this.dGovernmentOrPolicy = governmentOrPolicy;
+    }
+
+    public String getLiteratureReview() {
+        return dLiteratureReview;
+    }
+
+    public void setLiteratureReview(String literatureReview) {
+        this.dLiteratureReview = literatureReview;
+    }
+
+    public String getFundedBy() {
+        return dFundedBy;
+    }
+
+    public void setFundedBy(String fundedBy) {
+        this.dFundedBy = fundedBy;
     }
 
     //Other Methods

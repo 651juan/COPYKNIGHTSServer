@@ -31,7 +31,16 @@ public enum TokenType {
     TOK_DAT_TYPE("Data Type"),
     TOK_DAT_SAMPLE_SIZE("Sample Size"),
     TOK_DAT_LOG("Level of Aggregation"),
-    TOK_DAT_DMY("Data Material Year");
+    TOK_DAT_DMY("Data Material Year"),
+    TOK_DAT_MOC("Method of Collection"),
+    TOK_DAT_MOA("Method of Analysis"),
+    TOK_DAT_INDUSTRY("Industry"),
+    TOK_DAT_COUNTRY("Country"),
+    TOK_DAT_CROSS_COUNTRY("Cross-country"),
+    TOK_DAT_COMPARATIVE("Comparative"),
+    TOK_DAT_GOP("Government or policy"),
+    TOK_DAT_LR("Literature review"),
+    TOK_DAT_FUNDED("Funded By");
 
     private final String tokenValue;
 

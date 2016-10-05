@@ -154,6 +154,16 @@ public class ArticleParser {
             String dataYear = this.getData(TokenType.TOK_DAT_YEAR);
             String dataType = this.getData(TokenType.TOK_DAT_TYPE);
             myDatasets = new Datasets(dataDescription, dataYear, dataType);
+            myDatasets.setMethodOfCollection(this.getData(TokenType.TOK_DAT_MOC));
+            myDatasets.setMethodOfAnalysis(this.getData(TokenType.TOK_DAT_MOA));
+            myDatasets.setIndustry(this.getData(TokenType.TOK_DAT_INDUSTRY));
+            myDatasets.setCountry(this.getData(TokenType.TOK_DAT_COUNTRY));
+            myDatasets.setCrossCountry(this.getData(TokenType.TOK_DAT_CROSS_COUNTRY));
+            myDatasets.setComparative(this.getData(TokenType.TOK_DAT_COMPARATIVE));
+            myDatasets.setGovernmentOrPolicy(this.getData(TokenType.TOK_DAT_GOP));
+            myDatasets.setLiteratureReview(this.getData(TokenType.TOK_DAT_LR));
+            myDatasets.setFundedBy(this.getData(TokenType.TOK_DAT_FUNDED));
+
             myDatasets.setDatasets(this.getDatasets());
             shortArticle.setDatasets(myDatasets);
         }
@@ -233,7 +243,6 @@ public class ArticleParser {
      * @return URL[]
      */
     private URL getLinks() {
-        //TODO Normalise links to avoid Malformed URL
         URL tmpResult = null;
         String tmp = this.getData(TokenType.TOK_LINK);
 
