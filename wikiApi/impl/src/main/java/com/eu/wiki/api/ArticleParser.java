@@ -193,8 +193,12 @@ public class ArticleParser {
      */
     private String getData(TokenType type) {
         int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
-        if(idx != -1) {
-            return this.pRawData.substring(idx, this.pRawData.indexOf('|', idx)).trim();
+        if(idx >= 0) {
+            try {
+                return this.pRawData.substring(idx, this.pRawData.indexOf('|', idx)).trim();
+            }catch(StringIndexOutOfBoundsException e){
+                return "";
+            }
         }
         return "";
     }
@@ -323,7 +327,11 @@ public class ArticleParser {
             if (type == TokenType.TOK_DAT_DMY) {
                 return rawData.substring(idx, rawData.length()).trim();
             } else {
-                return rawData.substring(idx, rawData.indexOf('|', idx)).trim();
+                try {
+                    return rawData.substring(idx, rawData.indexOf('|', idx)).trim();
+                }catch(StringIndexOutOfBoundsException e) {
+                    return "";
+                }
             }
 
         }
