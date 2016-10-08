@@ -36,7 +36,7 @@ public class QueryFacadeImpl implements QueryFacade {
         }
     }
 
-    private String generateUrl(Query q){
+    public String generateUrl(Query q){
         StringBuilder workingUrl = new StringBuilder(BaseUrl);
         if (!q.getTitles().isEmpty()) {
 

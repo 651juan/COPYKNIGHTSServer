@@ -3,6 +3,7 @@ package com.eu.article.impl;
 import com.eu.article.bd.ArticleFacade;
 import com.eu.wiki.api.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,11 +14,11 @@ import java.util.stream.Collectors;
 public class ArticleFacadeImpl implements ArticleFacade {
 
     String url;
-    QueryFacade facade;
+    QueryCacheFacadeImpl facade;
 
-    public ArticleFacadeImpl(String username, String password, String url) {
+    public ArticleFacadeImpl(String username, String password, String url, LocalDateTime expiry) {
         this.url = url;
-        facade = new QueryFacadeImpl(url);
+        facade = new QueryCacheFacadeImpl(expiry,url);
     }
 
     private ArticleList resultToArticles(QueryResult queryResult){

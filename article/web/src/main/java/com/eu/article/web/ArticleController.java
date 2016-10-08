@@ -7,13 +7,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 /**
  * Created by Juan on 29/09/2016.
  */
 @RestController
 public class ArticleController {
 
-    public static final String URL_TO_WIKI = "http://www.copyrightevidence.org/evidence-wiki/api.php";
+    private static final String URL_TO_WIKI = "http://www.copyrightevidence.org/evidence-wiki/api.php";
+    private static final LocalDateTime expiry = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,10));
     private ArticleFacade facade;
 
     @RequestMapping(value="/article", params="title")
@@ -39,7 +44,7 @@ public class ArticleController {
     }
     private void initialiseFacade() {
         if (facade == null) {
-            facade = new ArticleFacadeImpl("", "", URL_TO_WIKI);
+            facade = new ArticleFacadeImpl("", "", URL_TO_WIKI, expiry);
         }
     }
 }
