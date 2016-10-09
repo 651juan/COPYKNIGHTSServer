@@ -36,13 +36,24 @@ public class ArticleParser {
             e.printStackTrace();
         }
 
+        String cmContinue = "";
+        Map<String, Object> tmp = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_CONTINUE.getTokenValue());
+        if(tmp != null) {
+            try {
+                cmContinue = tmp.get(TokenType.TOK_HEAD_CMCONTINUE.getTokenValue()).toString();
+            }catch(Exception e) {
+                cmContinue = "";
+            }
+        }
 
         myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_QUERY.getTokenValue());
         if(myMap != null) {
             if (myMap.containsKey(TokenType.TOK_HEAD_PAGES.getTokenValue())) {
                 return this.parsePages(myMap);
             } else if (myMap.containsKey(TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue())) {
-                return this.parseCategory(myMap);
+                QueryResult tmpResult = this.parseCategory(myMap);
+                tmpResult.setCmcontinue(cmContinue);
+                return tmpResult;
             }
         }
 
@@ -149,7 +160,7 @@ public class ArticleParser {
         shortArticle.setRefences(this.getReferences());
 
         //Start parsing datasets
-        if(this.checkDataset()) {
+        if (this.checkDataset()) {
             Datasets myDatasets;
             String dataDescription = this.getData(TokenType.TOK_DAT_DESCRIPTION);
             String dataYear = this.getData(TokenType.TOK_DAT_YEAR);
@@ -172,19 +183,6 @@ public class ArticleParser {
         shortArticle.setRawContent("");
 
         return shortArticle;
-    }
-
-    /**
-     * Given a TokenType tries to find the token in the header of the raw data
-     * @param type
-     * @return String
-     */
-    private String getHeaderData(TokenType type) {
-        int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
-        if(idx != -1) {
-            return this.pRawData.substring(idx, this.pRawData.indexOf(',', idx)).trim();
-        }
-        return "";
     }
 
     /**

@@ -11,6 +11,8 @@ public enum TokenType {
     TOK_HEAD_PAGEID("pageid"),
     TOK_HEAD_TITLE("title"),
     TOK_HEAD_REVISIONS("revisions"),
+    TOK_HEAD_CONTINUE("continue"),
+    TOK_HEAD_CMCONTINUE("cmcontinue"),
 
     TOK_CONTENT_FORMAT("contentformat"),
     TOK_CONTENT_MODEL("contentmodel"),
