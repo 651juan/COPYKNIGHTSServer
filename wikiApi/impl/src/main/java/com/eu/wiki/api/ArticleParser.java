@@ -259,7 +259,7 @@ public class ArticleParser {
      */
     private boolean checkDataset() {
         int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
-        if(idx != -1) {
+        if(idx >= 0) {
             String checkDatasetContent = this.pRawData.substring(idx, this.pRawData.indexOf("|}}", idx)).trim();
             if(!checkDatasetContent.equalsIgnoreCase("")){
                 return true;
@@ -268,6 +268,21 @@ public class ArticleParser {
         return false;
     }
 
+    private boolean checkDataset(String toCheck) {
+        int idx = toCheck.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue())+TokenType.TOK_DAT_DATASET.getValueLength();
+        if(idx >= 0) {
+            toCheck = toCheck.substring(idx,toCheck.length());
+            idx = toCheck.indexOf("|}");
+            if(idx >= 0) {
+                toCheck = toCheck.substring(0, idx);
+                if(toCheck.length() > 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
     /**
      * Returns the dataset objects
      * @return
@@ -279,7 +294,6 @@ public class ArticleParser {
             if(tmpIdx >= 0) {
                 String rawDatasetData = this.pRawData.substring(idx, tmpIdx + 2).trim();
                 String[] rawDatasets = rawDatasetData.split("\\}\\}\\{\\{");
-
                 Dataset[] result = new Dataset[rawDatasets.length];
 
                 for (int i = 0; i < rawDatasets.length; i++) {
@@ -291,18 +305,19 @@ public class ArticleParser {
                     }
 
                     int datasetSize = -1;
+                    if (this.checkDataset(rawDatasets[i])) {
+                        try {
+                            datasetSize = Integer.valueOf(this.getDatasetData(TokenType.TOK_DAT_SAMPLE_SIZE, rawDatasets[i]));
+                        } catch (Exception e) {
+                            datasetSize = -1;
+                        }
+                        String loa = this.getDatasetData(TokenType.TOK_DAT_LOG, rawDatasets[i]);
+                        String dmy = this.getDatasetData(TokenType.TOK_DAT_DMY, rawDatasets[i]);
 
-                    try {
-                        datasetSize = Integer.valueOf(this.getDatasetData(TokenType.TOK_DAT_SAMPLE_SIZE, rawDatasets[i]));
-                    } catch (Exception e) {
-                        datasetSize = -1;
+                        Dataset tmp = new Dataset(datasetSize, loa, dmy);
+
+                        result[i] = tmp;
                     }
-                    String loa = this.getDatasetData(TokenType.TOK_DAT_LOG, rawDatasets[i]);
-                    String dmy = this.getDatasetData(TokenType.TOK_DAT_DMY, rawDatasets[i]);
-
-                    Dataset tmp = new Dataset(datasetSize, loa, dmy);
-
-                    result[i] = tmp;
                 }
                 return result;
             }
