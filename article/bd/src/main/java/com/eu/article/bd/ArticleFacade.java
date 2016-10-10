@@ -10,17 +10,17 @@ public interface ArticleFacade {
     /**
      * Gets a @{@link List} of @{@link com.eu.wiki.api.Article} incl. description, by searching the titles.
      * @param articleTitles @{@link List} of page titles as a comma separated @{@link String}
-     * @return @{@link List} of @{@link com.eu.wiki.api.Article}
+     * @return {@link ArticleList}
      */
-    public ArticleList getArticles(String articleTitles);
+    ArticleList getArticlesByTitle(String articleTitles);
 
     /**
      * Gets a @{@link List} of short @{@link com.eu.wiki.api.Article} not including description. by searching for ids.
      * @param articleIds @{@link List} of page ids as a comma separated @{@link String}
      * @param getContent shows if you want the content of the article
-     * @return @{@link List} of @{@link com.eu.wiki.api.Article}
+     * @return {@link ArticleList}
      */
-    public ArticleList getArticlesById(String articleIds, boolean getContent);
+    ArticleList getArticlesById(String articleIds, boolean getContent);
 
     /**
      * Gets a @{@link List} of @{@link com.eu.wiki.api.Article}  by searching for categories.
@@ -28,7 +28,14 @@ public interface ArticleFacade {
      * @param cmContinue a String with the data required for pagination.
      * @param limit number of pages to return.
      *@param getContent shows if you want the content of the article
-     * @return @{@link List} of @{@link com.eu.wiki.api.Article}
+     * @return {@link ArticleList}
      */
-    public ArticleList getArticlesByCategory(String categories, String cmContinue, int limit, boolean getContent);
+    ArticleList getArticlesByCategory(String categories, String cmContinue, int limit, boolean getContent);
+
+    /**
+     * gets All the articles in a the category "Category:Studies"
+     * @param getContent if the content should be retreived or not.
+     * @return {@link ArticleList}
+     */
+    ArticleList getAllArticles(boolean getContent);
 }

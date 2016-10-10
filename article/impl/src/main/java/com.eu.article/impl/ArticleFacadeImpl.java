@@ -32,7 +32,7 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     @Override
-    public ArticleList getArticles(String articleTitles) {
+    public ArticleList getArticlesByTitle(String articleTitles) {
         Query q = new Query();
         q.setTitles(Arrays.asList(articleTitles.split(",")));
         return resultToArticles(facade.query(q));
@@ -57,7 +57,7 @@ public class ArticleFacadeImpl implements ArticleFacade {
     public ArticleList getArticlesByCategory(String category, String cmContinue, int limit, boolean getContent) {
         Query query = new Query();
         query.setList("categorymembers");
-        query.setCmtitle("Category:Studies");
+        query.setCmtitle(category);
         if (!cmContinue.equals("")) {
             query.setCmContinue(cmContinue);
         }
@@ -71,16 +71,34 @@ public class ArticleFacadeImpl implements ArticleFacade {
         }
     }
 
-    private ArticleList getFullArticles(QueryResult queryResult) {
-        Query q = new Query();
-        if (queryResult.getPagesList().size() > 0) {
-            q.setPageids(queryResult.getPagesList().stream()
-                    .map(Article::getPageid)
-                    .collect(Collectors.toList()));
-            return resultToArticles(facade.query(q));
+    @Override
+    public ArticleList getAllArticles(boolean getContent) {
+        return getArticlesByCategory("Category:Studies", "", 0, getContent);
+    }
 
-        } else {
-            return null;
+    private ArticleList getFullArticles(QueryResult queryResult) {
+        return getArticleInIncrements(queryResult);
+    }
+
+    private ArticleList getArticleInIncrements(QueryResult queryResult) {
+        int size = queryResult.getPagesList().size();
+        ArticleList articleList = new ArticleList();
+        if (size > 0) {
+            for (int i = 0; i < Math.ceil(size / 50); i++) {
+                Query q = new Query();
+                q.setPageids(queryResult.getPagesList().stream()
+                        .skip(i * 50)
+                        .limit(50)
+                        .map(Article::getPageid)
+                        .collect(Collectors.toList()));
+
+                ArticleList tempArticle = resultToArticles(facade.query(q));
+                articleList.getArticles().addAll(tempArticle.getArticles());
+            }
+            if (!queryResult.getCmcontinue().isEmpty()) {
+                articleList.setCmContinue(queryResult.getCmcontinue());
+            }
         }
+        return articleList;
     }
 }

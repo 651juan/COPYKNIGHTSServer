@@ -21,12 +21,11 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
 
     @Override
     public QueryResult query(Query q) {
-        if (currentResult.get(queryFacade.generateUrl(q)) == null || this.checkExpiry()) {
+        String url = queryFacade.generateUrl(q);
+        if (currentResult.get(url) == null || this.checkExpiry()) {
             getAndUpdate(q);
-        } else {
-            return currentResult.get(queryFacade.generateUrl(q));
         }
-        return currentResult.get(queryFacade.generateUrl(q));
+        return currentResult.get(url);
     }
 
     private void getAndUpdate(Query q) {

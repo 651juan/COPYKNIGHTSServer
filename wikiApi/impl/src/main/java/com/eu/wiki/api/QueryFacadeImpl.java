@@ -31,10 +31,11 @@ public class QueryFacadeImpl implements QueryFacade {
         }
         if (response != null) {
             return parser.parseResult(response.getEntity(String.class));
-        } else {
-            return null;
         }
+        return null;
     }
+
+
 
     public String generateUrl(Query q){
         StringBuilder workingUrl = new StringBuilder(BaseUrl);
@@ -64,7 +65,7 @@ public class QueryFacadeImpl implements QueryFacade {
             workingUrl.append(q.getCmContinue());
             workingUrl.append('&');
         }
-        if (q.getLimit() != null) {
+        if (q.getLimit() != null && !q.getLimit().equals("0")) {
             workingUrl.append(LIMIT_ID);
             workingUrl.append(q.getLimit());
             workingUrl.append('&');

@@ -24,7 +24,7 @@ public class ArticleController {
     @RequestMapping(value="/article", params="title")
     public ArticleList articleByTitle(@RequestParam("title") String titles) {
         initialiseFacade();
-        return facade.getArticles(titles);
+        return facade.getArticlesByTitle(titles);
     }
 
     @RequestMapping(value="/article", params={"pageids","getContent"})
@@ -42,6 +42,13 @@ public class ArticleController {
         initialiseFacade();
         return facade.getArticlesByCategory(categories, cmContinue, limit,getContent);
     }
+
+    @RequestMapping(value="/article", params={"getContent"})
+    public ArticleList allArticles(@RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
+        initialiseFacade();
+        return facade.getAllArticles(getContent);
+    }
+
     private void initialiseFacade() {
         if (facade == null) {
             facade = new ArticleFacadeImpl("", "", URL_TO_WIKI, expiry);
