@@ -73,18 +73,24 @@ public class ArticleFacadeImpl implements ArticleFacade {
 
     @Override
     public ArticleList getAllArticles(boolean getContent) {
-        return getArticlesByCategory("Category:Studies", "", 0, getContent);
+        ArticleList output = getArticlesByCategory("Category:Studies", "", 50, getContent);
+        while(output.getCmContinue() != null) {
+            ArticleList innerTemp = getArticlesByCategory("Category:Studies", output.getCmContinue(),50, getContent);
+            output.getArticles().addAll(innerTemp.getArticles());
+            output.setCmContinue(innerTemp.getCmContinue());
+        }
+        return output;
     }
 
     private ArticleList getFullArticles(QueryResult queryResult) {
-        return getArticleInIncrements(queryResult);
+        return getFullArticleInIncrements(queryResult);
     }
 
-    private ArticleList getArticleInIncrements(QueryResult queryResult) {
+    private ArticleList getFullArticleInIncrements(QueryResult queryResult) {
         int size = queryResult.getPagesList().size();
         ArticleList articleList = new ArticleList();
         if (size > 0) {
-            for (int i = 0; i < Math.ceil(size / 50); i++) {
+            for (int i = 0; i < Math.ceil((double) size / 50); i++) {
                 Query q = new Query();
                 q.setPageids(queryResult.getPagesList().stream()
                         .skip(i * 50)
