@@ -22,9 +22,9 @@ public class ArticleParser {
     }
 
     /**
-     * Main parsing function checks checks the form of the raw data weather it is of the form of categories or pages
-     * @param raw
-     * @return QueryResult
+     * Main parsing function, given the raw json will return a QueryResult containing a list of Article objects
+     * @param raw the raw json
+     * @return QueryResult containing a list of Article Objects
      */
     public QueryResult parseResult(String raw) {
         Map<String,Object> myMap = new HashMap<>();
@@ -61,10 +61,11 @@ public class ArticleParser {
     }
 
     //Private Methods
+
     /**
      * Parses raw data when it contains page info and content
-     * @param myMap
-     * @return QueryResult
+     * @param myMap the pages map
+     * @return QueryResult containing a list of Article objects and their contents
      */
     private QueryResult parsePages(Map<String,Object> myMap){
         myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_PAGES.getTokenValue());
@@ -116,8 +117,8 @@ public class ArticleParser {
 
     /**
      * Parses raw data when its of the form of categories
-     * @param myMap
-     * @return QueryResult
+     * @param myMap the category members map
+     * @return QueryResult containing a list of Article objects which are short Articles
      */
     private QueryResult parseCategory(Map<String,Object> myMap){
         List<Object> results = (ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue());
@@ -141,8 +142,8 @@ public class ArticleParser {
 
     /**
      * Parses raw data which must be assigned to the raw data attribute of the Article object
-     * @param shortArticle
-     * @return Article
+     * @param shortArticle the article object containing the raw data to parse
+     * @return a parsed Article without the raw data
      */
     private Article parse(Article shortArticle) {
 
@@ -187,8 +188,8 @@ public class ArticleParser {
 
     /**
      * Given a TokenType tries to find the token in the body of the raw data
-     * @param type
-     * @return String
+     * @param type the token to look for
+     * @return a string containing the requested token data or an empty string if the token is not found
      */
     private String getData(TokenType type) {
         int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
@@ -199,8 +200,8 @@ public class ArticleParser {
     }
 
     /**
-     * Returns the Authors as an array of type String of the Article
-     * @return String[]
+     * Splits the Authors string into an array of type String of Author names.
+     * @return the Author String array
      */
     private String[] getAuthors() {
         List<String> tmpResult = new ArrayList<>();
@@ -223,7 +224,7 @@ public class ArticleParser {
 
     /**
      * Returns the references of the Article as an Array of Reference objects
-     * @return Reference[]
+     * @return an array of References
      */
     private Reference[] getReferences() {
         List<Reference> tmpResult = new ArrayList<>();
@@ -241,6 +242,7 @@ public class ArticleParser {
      * Returns all the links where the article can be found online as an Array of URLS
      * @return URL[]
      */
+    //TODO try to obtain other links that are not Authentic links
     private URL getLinks() {
         URL tmpResult = null;
         String tmp = this.getData(TokenType.TOK_LINK);
@@ -254,38 +256,8 @@ public class ArticleParser {
     }
 
     /**
-     * Checks if the raw data contains dataset information
-     * @return true if the dataset has dataset information false otherwise
-     */
-    private boolean checkDataset() {
-        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
-        if(idx >= 0) {
-            String checkDatasetContent = this.pRawData.substring(idx, this.pRawData.indexOf("|}}", idx)).trim();
-            if(!checkDatasetContent.equalsIgnoreCase("")){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkDataset(String toCheck) {
-        int idx = toCheck.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue())+TokenType.TOK_DAT_DATASET.getValueLength();
-        if(idx >= 0) {
-            toCheck = toCheck.substring(idx,toCheck.length());
-            idx = toCheck.indexOf("|}");
-            if(idx >= 0) {
-                toCheck = toCheck.substring(0, idx);
-                if(toCheck.length() > 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-    /**
-     * Returns the dataset objects
-     * @return
+     * Returns an Array of Dataset objects which contain individual dataset data if any are available in the raw data.
+     * @return an Array of Dataset objects
      */
     private Dataset[] getDatasets() {
         int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
@@ -328,10 +300,10 @@ public class ArticleParser {
     }
 
     /**
-     * Obtains the data from the short datasets
+     * Obtains the data from the individual datasets
      * @param type the token type of the data to obtain
-     * @param rawData the raw dataset data
-     * @return String
+     * @param rawData the individual raw dataset data
+     * @return a String containing the data requested or an empty String if the data is not found.
      */
     private String getDatasetData(TokenType type, String rawData) {
         int idx = rawData.indexOf(type.getTokenValue()) + type.getValueLength() + 1;
@@ -344,7 +316,7 @@ public class ArticleParser {
     /**
      * Normalises URL strings to avoid malformed url exceptions
      * @param toNormalise the url string to normalise
-     * @return the normalised url
+     * @return the normalised url, null in case of exceptions
      */
     private URL normaliseURL(String toNormalise) {
         if(!(toNormalise.startsWith("http://") || toNormalise.startsWith("https://"))){
@@ -357,5 +329,41 @@ public class ArticleParser {
             System.err.println("Malformed URL: " + toNormalise);
             return null;
         }
+    }
+
+    /**
+     * Checks the rawdata for inforamtion about the datasets
+     * @return true if the raw data contains information about the datasets used, false otherwise.
+     */
+    private boolean checkDataset() {
+        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
+        if(idx >= 0) {
+            String checkDatasetContent = this.pRawData.substring(idx, this.pRawData.indexOf("|}}", idx)).trim();
+            if(!checkDatasetContent.equalsIgnoreCase("")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks individual dataset data and makes sure it is not blank.
+     * @param toCheck individual dataset data to check
+     * @return True if the individual dataset data is not blank, false otherwise.
+     */
+    private boolean checkDataset(String toCheck) {
+        int idx = toCheck.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue())+TokenType.TOK_DAT_DATASET.getValueLength();
+        if(idx >= 0) {
+            toCheck = toCheck.substring(idx,toCheck.length());
+            idx = toCheck.indexOf("|}");
+            if(idx >= 0) {
+                toCheck = toCheck.substring(0, idx);
+                if(toCheck.length() > 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
