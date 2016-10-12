@@ -244,17 +244,26 @@ public class ArticleParser {
      * Returns all the links where the article can be found online as an Array of URLS
      * @return URL[]
      */
-    //TODO try to obtain other links that are not Authentic links
-    private URL getLinks() {
-        URL tmpResult = null;
-        String tmp = this.getData(TokenType.TOK_LINK);
+    private URL[] getLinks() {
+        List<URL> tmpResult = new ArrayList<URL>();
 
+        int idx = 0;
+        int prevIdx = 0;
+        while(idx >= 0) {
+            prevIdx = idx;
+            idx = this.pRawData.indexOf(TokenType.TOK_LINK.getTokenValue(), idx)+TokenType.TOK_LINK.getValueLength()+1;
 
-        if(!tmp.equalsIgnoreCase("")){
-            tmpResult = this.normaliseURL(tmp);
+            if(idx <= prevIdx) {
+                break;
+            }
+
+            String tmp = this.pRawData.substring(idx, this.pRawData.indexOf('|', idx));
+            if(tmp.length() > 0) {
+                tmpResult.add(this.normaliseURL(tmp));
+            }
         }
 
-        return tmpResult;
+        return tmpResult.toArray(new URL[tmpResult.size()]);
     }
 
     /**
