@@ -29,11 +29,10 @@ public class ArticleParser {
     public QueryResult parseResult(String raw) {
         Map<String,Object> myMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
-
         try {
             myMap = objectMapper.readValue(raw, HashMap.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            return new QueryResult("Unable to construct map from JSON.");
         }
 
         String cmContinue = "";
@@ -57,7 +56,7 @@ public class ArticleParser {
             }
         }
 
-        return new QueryResult();
+        return new QueryResult("Unknown JSON format.");
     }
 
     //Private Methods
@@ -76,8 +75,7 @@ public class ArticleParser {
                 try {
                     pageID = Integer.valueOf(entry.getKey());
                 }catch(Exception e) {
-                    //TODO Generate bad id warning here
-                    return new QueryResult();
+                    return new QueryResult("Bad ID Unable to convert to Integer.");
                 }
 
                 //Assume its a short article
@@ -85,10 +83,14 @@ public class ArticleParser {
 
                 LinkedHashMap<String, Object> tmpMap = (LinkedHashMap<String, Object>) myMap.get(entry.getKey());
                 if (tmpMap != null) {
-                    String ns = tmpMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
                     String title = tmpMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
-                    myArticle.setName(title);
 
+                    if(tmpMap.containsKey(TokenType.TOK_HEAD_MISSING.getTokenValue())){
+                        return new QueryResult("Missing Article Title: " + title);
+                    }
+
+                    String ns = tmpMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
+                    myArticle.setName(title);
                     tmpMap = (LinkedHashMap<String, Object>) ((ArrayList<Object>) tmpMap.get(TokenType.TOK_HEAD_REVISIONS.getTokenValue())).get(0);
 
                     if (tmpMap != null) {
@@ -111,8 +113,8 @@ public class ArticleParser {
             return new QueryResult(parsedResults);
         }
 
-        //Let parseResult handle null and return warnings
-        return null;
+        //Return Warning
+        return new QueryResult("Token not found " + TokenType.TOK_HEAD_PAGES.getTokenValue());
     }
 
     /**
@@ -136,8 +138,8 @@ public class ArticleParser {
             return new QueryResult(parsedResults);
         }
 
-        //Let parseResult handle null and return warnings
-        return null;
+        //Return Warning
+        return new QueryResult("Token not found " + TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue());
     }
 
     /**

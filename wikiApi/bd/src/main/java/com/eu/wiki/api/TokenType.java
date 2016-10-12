@@ -13,6 +13,7 @@ public enum TokenType {
     TOK_HEAD_REVISIONS("revisions"),
     TOK_HEAD_CONTINUE("continue"),
     TOK_HEAD_CMCONTINUE("cmcontinue"),
+    TOK_HEAD_MISSING("missing"),
 
     TOK_CONTENT_FORMAT("contentformat"),
     TOK_CONTENT_MODEL("contentmodel"),
