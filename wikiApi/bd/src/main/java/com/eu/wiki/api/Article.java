@@ -13,7 +13,7 @@ public class Article {
     private String aYear; //Needed When year is "Working Paper"
     private String aCitation;
     private String aAbstract;
-    private URL aLink;
+    private URL[] aLinks;
     private Reference[] aRefences;
     private String aRawContent;
     private Datasets aDatasets;
@@ -93,12 +93,12 @@ public class Article {
         this.aAbstract = aAbstract;
     }
 
-    public URL getLink() {
-        return aLink;
+    public URL[] getLink() {
+        return aLinks;
     }
 
-    public void setLinks(URL link) {
-        this.aLink = link;
+    public void setLinks(URL[] links) {
+        this.aLinks = links;
     }
 
     public Reference[] getRefences() {
