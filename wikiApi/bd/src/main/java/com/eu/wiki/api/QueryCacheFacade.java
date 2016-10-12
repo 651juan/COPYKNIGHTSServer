@@ -5,5 +5,5 @@ package com.eu.wiki.api;
  */
 interface QueryCacheFacade {
 
-    QueryResult query(Query q);
+    ArticleList query(Query q);
 }

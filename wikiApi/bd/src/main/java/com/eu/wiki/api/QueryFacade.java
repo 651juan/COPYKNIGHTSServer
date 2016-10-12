@@ -15,7 +15,7 @@ public interface QueryFacade {
     String DIR_ID = "cmdir=";
     String CONTINUE_ID = "continue=";
 
-    QueryResult query(Query q);
+    ArticleList query(Query q);
 
     String generateUrl(Query q);
 

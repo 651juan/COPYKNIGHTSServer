@@ -19,7 +19,7 @@ public class QueryFacadeImpl implements QueryFacade {
     }
 
     @Override
-    public QueryResult query(Query q) {
+    public ArticleList query(Query q) {
         String url = this.generateUrl(q);
         Client client = Client.create();
         ClientResponse response = null;

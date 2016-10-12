@@ -7,7 +7,7 @@ import java.util.HashMap;
  * Created by Juan on 08/10/2016.
  */
 public class QueryCacheFacadeImpl implements QueryCacheFacade {
-    private HashMap<String, QueryResult> currentResult;
+    private HashMap<String, ArticleList> currentResult;
     private LocalDateTime  lastUpdated;
     private LocalDateTime expiryPeriod;
     private QueryFacade queryFacade;
@@ -20,7 +20,7 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
     }
 
     @Override
-    public QueryResult query(Query q) {
+    public ArticleList query(Query q) {
         String url = queryFacade.generateUrl(q);
         if (currentResult.get(url) == null || this.checkExpiry()) {
             getAndUpdate(q);

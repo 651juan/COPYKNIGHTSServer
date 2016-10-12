@@ -22,17 +22,17 @@ public class ArticleParser {
     }
 
     /**
-     * Main parsing function, given the raw json will return a QueryResult containing a list of Article objects
+     * Main parsing function, given the raw json will return a ArticleList containing a list of Article objects
      * @param raw the raw json
-     * @return QueryResult containing a list of Article Objects
+     * @return ArticleList containing a list of Article Objects
      */
-    public QueryResult parseResult(String raw) {
+    public ArticleList parseResult(String raw) {
         Map<String,Object> myMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             myMap = objectMapper.readValue(raw, HashMap.class);
         } catch (IOException e) {
-            return new QueryResult("Unable to construct map from JSON.");
+            return new ArticleList("Unable to construct map from JSON.");
         }
 
         String cmContinue = "";
@@ -50,13 +50,13 @@ public class ArticleParser {
             if (myMap.containsKey(TokenType.TOK_HEAD_PAGES.getTokenValue())) {
                 return this.parsePages(myMap);
             } else if (myMap.containsKey(TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue())) {
-                QueryResult tmpResult = this.parseCategory(myMap);
-                tmpResult.setCmcontinue(cmContinue);
+                ArticleList tmpResult = this.parseCategory(myMap);
+                tmpResult.setCmContinue(cmContinue);
                 return tmpResult;
             }
         }
 
-        return new QueryResult("Unknown JSON format.");
+        return new ArticleList("Unknown JSON format.");
     }
 
     //Private Methods
@@ -64,9 +64,9 @@ public class ArticleParser {
     /**
      * Parses raw data when it contains page info and content
      * @param myMap the pages map
-     * @return QueryResult containing a list of Article objects and their contents
+     * @return ArticleList containing a list of Article objects and their contents
      */
-    private QueryResult parsePages(Map<String,Object> myMap){
+    private ArticleList parsePages(Map<String,Object> myMap){
         myMap = (LinkedHashMap<String, Object>) myMap.get(TokenType.TOK_HEAD_PAGES.getTokenValue());
         if(myMap != null) {
             List<Article> parsedResults = new ArrayList<>();
@@ -75,7 +75,7 @@ public class ArticleParser {
                 try {
                     pageID = Integer.valueOf(entry.getKey());
                 }catch(Exception e) {
-                    return new QueryResult("Bad ID Unable to convert to Integer.");
+                    return new ArticleList("Bad ID Unable to convert to Integer.");
                 }
 
                 //Assume its a short article
@@ -86,7 +86,7 @@ public class ArticleParser {
                     String title = tmpMap.get(TokenType.TOK_HEAD_TITLE.getTokenValue()).toString();
 
                     if(tmpMap.containsKey(TokenType.TOK_HEAD_MISSING.getTokenValue())){
-                        return new QueryResult("Missing Article Title: " + title);
+                        return new ArticleList("Missing Article Title: " + title);
                     }
 
                     String ns = tmpMap.get(TokenType.TOK_HEAD_NS.getTokenValue()).toString();
@@ -110,19 +110,19 @@ public class ArticleParser {
                     }
                 }
             }
-            return new QueryResult(parsedResults);
+            return new ArticleList(parsedResults);
         }
 
         //Return Warning
-        return new QueryResult("Token not found " + TokenType.TOK_HEAD_PAGES.getTokenValue());
+        return new ArticleList("Token not found " + TokenType.TOK_HEAD_PAGES.getTokenValue());
     }
 
     /**
      * Parses raw data when its of the form of categories
      * @param myMap the category members map
-     * @return QueryResult containing a list of Article objects which are short Articles
+     * @return ArticleList containing a list of Article objects which are short Articles
      */
-    private QueryResult parseCategory(Map<String,Object> myMap){
+    private ArticleList parseCategory(Map<String,Object> myMap){
         List<Object> results = (ArrayList<Object>) myMap.get(TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue());
         if(results != null) {
             List<Article> parsedResults = new ArrayList<>();
@@ -135,11 +135,11 @@ public class ArticleParser {
                 parsedResults.add(new Article(pageID,title,true));
             }
 
-            return new QueryResult(parsedResults);
+            return new ArticleList(parsedResults);
         }
 
         //Return Warning
-        return new QueryResult("Token not found " + TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue());
+        return new ArticleList("Token not found " + TokenType.TOK_HEAD_CATEGORY_MEMBERS.getTokenValue());
     }
 
     /**

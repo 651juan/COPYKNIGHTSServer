@@ -21,21 +21,11 @@ public class ArticleFacadeImpl implements ArticleFacade {
         facade = new QueryCacheFacadeImpl(expiry,url);
     }
 
-    private ArticleList resultToArticles(QueryResult queryResult){
-        //ArticleParser myParser = new ArticleParser();
-        ArticleList list = new ArticleList();
-        list.setArticles(queryResult.getPagesList());
-        //list.setArticles(queryResult.getPagesList().stream().map(myParser::parse).collect(Collectors.toList()));
-        if (queryResult.getCmcontinue() != null)
-        list.setCmContinue(queryResult.getCmcontinue());
-        return list;
-    }
-
     @Override
     public ArticleList getArticlesByTitle(String articleTitles) {
         Query q = new Query();
         q.setTitles(Arrays.asList(articleTitles.split(",")));
-        return resultToArticles(facade.query(q));
+        return facade.query(q);
     }
 
     @Override
@@ -45,11 +35,11 @@ public class ArticleFacadeImpl implements ArticleFacade {
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
         query.setPageids(pageIds);
-        QueryResult queryResult = facade.query(query);
+        ArticleList queryResult = facade.query(query);
         if (getContent) {
             return getFullArticles(queryResult);
         } else {
-            return resultToArticles(queryResult);
+            return queryResult;
         }
     }
 
@@ -63,11 +53,11 @@ public class ArticleFacadeImpl implements ArticleFacade {
         }
         query.setLimit(Integer.toString(limit));
         query.setNcontinue(true);
-        QueryResult queryResult = facade.query(query);
+        ArticleList articleList = facade.query(query);
         if (getContent) {
-            return getFullArticles(queryResult);
+            return getFullArticles(articleList);
         } else {
-            return resultToArticles(queryResult);
+            return articleList;
         }
     }
 
@@ -82,27 +72,27 @@ public class ArticleFacadeImpl implements ArticleFacade {
         return output;
     }
 
-    private ArticleList getFullArticles(QueryResult queryResult) {
+    private ArticleList getFullArticles(ArticleList queryResult) {
         return getFullArticleInIncrements(queryResult);
     }
 
-    private ArticleList getFullArticleInIncrements(QueryResult queryResult) {
-        int size = queryResult.getPagesList().size();
+    private ArticleList getFullArticleInIncrements(ArticleList queryResult) {
+        int size = queryResult.getArticles().size();
         ArticleList articleList = new ArticleList();
         if (size > 0) {
             for (int i = 0; i < Math.ceil((double) size / 50); i++) {
                 Query q = new Query();
-                q.setPageids(queryResult.getPagesList().stream()
+                q.setPageids(queryResult.getArticles().stream()
                         .skip(i * 50)
                         .limit(50)
                         .map(Article::getPageid)
                         .collect(Collectors.toList()));
 
-                ArticleList tempArticle = resultToArticles(facade.query(q));
+                ArticleList tempArticle = facade.query(q);
                 articleList.getArticles().addAll(tempArticle.getArticles());
             }
-            if (!queryResult.getCmcontinue().isEmpty()) {
-                articleList.setCmContinue(queryResult.getCmcontinue());
+            if (queryResult.getCmContinue() != null) {
+                articleList.setCmContinue(queryResult.getCmContinue());
             }
         }
         return articleList;
