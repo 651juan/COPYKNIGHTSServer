@@ -16,6 +16,7 @@ public class Query {
     private String cmSort;
     private String cmDir;
     private boolean ncontinue;
+    private boolean all;
     public static final String FORMAT = "json";
 
     public Query() {
@@ -98,5 +99,13 @@ public class Query {
 
     public void setNcontinue(boolean ncontinue) {
         this.ncontinue = ncontinue;
+    }
+
+    public boolean isAll() {
+        return all;
+    }
+
+    public void setAll(boolean all) {
+        this.all = all;
     }
 }

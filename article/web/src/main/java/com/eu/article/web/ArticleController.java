@@ -12,13 +12,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
+ * The controller for requests relating to the parsing of Articles.
+ *
  * Created by Juan on 29/09/2016.
  */
 @RestController
 public class ArticleController {
 
     private static final String URL_TO_WIKI = "http://www.copyrightevidence.org/evidence-wiki/api.php";
-    private static final LocalDateTime expiry = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,10));
+    private static final LocalDateTime expiry = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.now());
     private ArticleFacade facade;
 
     @RequestMapping(value="/article", params="title")
@@ -27,26 +29,16 @@ public class ArticleController {
         return facade.getArticlesByTitle(titles);
     }
 
-    @RequestMapping(value="/article", params={"pageids","getContent"})
-    public ArticleList articleById(@RequestParam("pageids") String ids,
-                                   @RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
+    @RequestMapping(value="/article", params={"pageids"})
+    public ArticleList articleById(@RequestParam("pageids") String ids) {
         initialiseFacade();
-        return facade.getArticlesById(ids, getContent);
+        return facade.getArticlesById(ids);
     }
 
-    @RequestMapping(value="/article", params={"category", "cmContinue", "limit","getContent"})
-    public ArticleList articleByCategory(@RequestParam("category") String categories,
-                                         @RequestParam(value="cmContinue",defaultValue = "") String cmContinue,
-                                         @RequestParam(value="limit",defaultValue="10") int limit,
-                                         @RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
+    @RequestMapping(value="/article")
+    public ArticleList allArticles() {
         initialiseFacade();
-        return facade.getArticlesByCategory(categories, cmContinue, limit,getContent);
-    }
-
-    @RequestMapping(value="/article", params={"getContent"})
-    public ArticleList allArticles(@RequestParam(value="getContent", defaultValue = "false") boolean getContent) {
-        initialiseFacade();
-        return facade.getAllArticles(getContent);
+        return facade.getAllArticles();
     }
 
     private void initialiseFacade() {
