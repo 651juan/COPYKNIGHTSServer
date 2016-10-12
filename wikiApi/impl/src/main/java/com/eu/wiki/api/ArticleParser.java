@@ -251,7 +251,7 @@ public class ArticleParser {
         int prevIdx = 0;
         while(idx >= 0) {
             prevIdx = idx;
-            idx = this.pRawData.indexOf(TokenType.TOK_LINK.getTokenValue(), idx)+TokenType.TOK_LINK.getValueLength()+1;
+            idx = this.pRawData.indexOf(TokenType.TOK_LINK.getTokenValue(), idx)+TokenType.TOK_LINK.getValueLength();
 
             if(idx <= prevIdx) {
                 break;

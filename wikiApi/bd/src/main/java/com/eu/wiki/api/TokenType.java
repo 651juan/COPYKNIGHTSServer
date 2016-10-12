@@ -27,7 +27,7 @@ public enum TokenType {
     TOK_REFERENCES("Reference"),
     TOK_PLAINTEXT_PROPOSITION("Plain Text Proposition"),
     TOK_AUTHENTIC_LINK("Authentic Link"),
-    TOK_LINK("Link"),
+    TOK_LINK("Link="),
 
     TOK_DAT_DATASET("Dataset"),
     TOK_DAT_DESCRIPTION("Description of Data"),
