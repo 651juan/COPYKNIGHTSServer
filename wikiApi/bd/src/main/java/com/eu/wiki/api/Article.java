@@ -15,6 +15,9 @@ public class Article {
     private String aAbstract;
     private URL[] aLinks;
     private Reference[] aRefences;
+    private String[] aFundamentalIssues;
+    private String[] aEvidenceBasedPolicies;
+    private String[] aDiscipline;
     private String aRawContent;
     private Datasets aDatasets;
     // When true artle only contains title and pageid
@@ -131,5 +134,29 @@ public class Article {
 
     public void setDatasets(Datasets datasets) {
         this.aDatasets = datasets;
+    }
+
+    public String[] getFundamentalIssues() {
+        return this.aFundamentalIssues;
+    }
+
+    public void setFundamentalIssues(String[] fundamentalIssues) {
+        this.aFundamentalIssues = fundamentalIssues;
+    }
+
+    public String[] getEvidenceBasedPolicies() {
+        return this.aEvidenceBasedPolicies;
+    }
+
+    public void setEvidenceBasedPolicies(String[] evidenceBasedPolices) {
+        this.aEvidenceBasedPolicies = evidenceBasedPolices;
+    }
+
+    public String[] getDiscipline() {
+        return this.aDiscipline;
+    }
+
+    public void setDiscipline(String[] discipline) {
+        this.aDiscipline = discipline;
     }
 }

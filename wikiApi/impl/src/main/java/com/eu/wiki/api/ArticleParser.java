@@ -161,6 +161,9 @@ public class ArticleParser {
         shortArticle.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
         shortArticle.setLinks(this.getLinks());
         shortArticle.setRefences(this.getReferences());
+        shortArticle.setFundamentalIssues(this.getFundamentalIssues());
+        shortArticle.setEvidenceBasedPolicies(this.getEvidenceBasedPolicies());
+        shortArticle.setDiscipline(this.splitData(this.getData(TokenType.TOK_DISCIPLINE), ","));
 
         //Start parsing datasets
         if (this.checkDataset()) {
@@ -169,10 +172,11 @@ public class ArticleParser {
             String dataYear = this.getData(TokenType.TOK_DAT_YEAR);
             String dataType = this.getData(TokenType.TOK_DAT_TYPE);
             myDatasets = new Datasets(dataDescription, dataYear, dataType);
-            myDatasets.setMethodOfCollection(this.getData(TokenType.TOK_DAT_MOC));
-            myDatasets.setMethodOfAnalysis(this.getData(TokenType.TOK_DAT_MOA));
-            myDatasets.setIndustry(this.getData(TokenType.TOK_DAT_INDUSTRY));
-            myDatasets.setCountry(this.getData(TokenType.TOK_DAT_COUNTRY));
+            myDatasets.setDataSources(this.splitData(this.getData(TokenType.TOK_DAT_SOURCES), ";"));
+            myDatasets.setMethodOfCollection(this.splitData(this.getData(TokenType.TOK_DAT_MOC), ","));
+            myDatasets.setMethodOfAnalysis(this.splitData(this.getData(TokenType.TOK_DAT_MOA), ","));
+            myDatasets.setIndustry(this.splitData(this.getData(TokenType.TOK_DAT_INDUSTRY), ";"));
+            myDatasets.setCountry(this.splitData(this.getData(TokenType.TOK_DAT_COUNTRY), ";"));
             myDatasets.setCrossCountry(this.getData(TokenType.TOK_DAT_CROSS_COUNTRY));
             myDatasets.setComparative(this.getData(TokenType.TOK_DAT_COMPARATIVE));
             myDatasets.setGovernmentOrPolicy(this.getData(TokenType.TOK_DAT_GOP));
@@ -194,8 +198,9 @@ public class ArticleParser {
      * @return a string containing the requested token data or an empty string if the token is not found
      */
     private String getData(TokenType type) {
-        int idx = this.pRawData.indexOf(type.getTokenValue()) + type.getValueLength()+1;
-        if(idx >= 0) {
+        int idx = this.pRawData.indexOf(type.getTokenValue());
+        if(idx != -1) {
+            idx += type.getValueLength();
             return this.pRawData.substring(idx, this.pRawData.indexOf('|', idx)).trim();
         }
         return "";
@@ -267,15 +272,32 @@ public class ArticleParser {
     }
 
     /**
+     * Returns an array of type String of all the fundamental issues the article belongs to
+     * @return A String array of fundamental issues
+     */
+    private String[] getFundamentalIssues() {
+        String rawIssues = this.getData(TokenType.TOK_FI);
+        return rawIssues.split(",");
+    }
+
+    /**
+     * Returns an array of type String of all the evidence based policies the article belongs to
+     * @return A String array of evidence based policies
+     */
+    private String[] getEvidenceBasedPolicies() {
+        String rawPolicies = this.getData(TokenType.TOK_EBP);
+        return rawPolicies.split(",");
+    }
+    /**
      * Returns an Array of Dataset objects which contain individual dataset data if any are available in the raw data.
      * @return an Array of Dataset objects
      */
     private Dataset[] getDatasets() {
-        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
+        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength();
         if(idx != -1) {
             int tmpIdx = this.pRawData.indexOf("|}}|}}", idx);
             if(tmpIdx >= 0) {
-                String rawDatasetData = this.pRawData.substring(idx, tmpIdx + 2).trim();
+                String rawDatasetData = this.pRawData.substring(idx, tmpIdx + 3).trim();
                 String[] rawDatasets = rawDatasetData.split("\\}\\}\\{\\{");
                 Dataset[] result = new Dataset[rawDatasets.length];
 
@@ -284,13 +306,14 @@ public class ArticleParser {
                         rawDatasets[i] = rawDatasets[i].substring(2);
                     }
                     if (rawDatasets[i].endsWith("|}}")) {
-                        rawDatasets[i] = rawDatasets[i].substring(0, rawDatasets[i].length() - 3);
+                        rawDatasets[i] = rawDatasets[i].substring(0, rawDatasets[i].length() - 2);
                     }
 
                     int datasetSize = -1;
                     if (this.checkDataset(rawDatasets[i])) {
+
                         try {
-                            datasetSize = Integer.valueOf(this.getDatasetData(TokenType.TOK_DAT_SAMPLE_SIZE, rawDatasets[i]));
+                            datasetSize = Integer.valueOf(this.getDatasetData(TokenType.TOK_DAT_SAMPLE_SIZE, rawDatasets[i]).replaceAll(",",""));
                         } catch (Exception e) {
                             datasetSize = -1;
                         }
@@ -317,11 +340,22 @@ public class ArticleParser {
      * @return a String containing the data requested or an empty String if the data is not found.
      */
     private String getDatasetData(TokenType type, String rawData) {
-        int idx = rawData.indexOf(type.getTokenValue()) + type.getValueLength() + 1;
+        int idx = rawData.indexOf(type.getTokenValue());
         if (idx != -1) {
+            idx += type.getValueLength();
             return rawData.substring(idx, rawData.indexOf('|', idx)).trim();
         }
         return "";
+    }
+
+    /**
+     * Splits a given Strong using the given delimeter and returns an array of strings
+     * @param toSplit the String to split
+     * @param delimeter the delimeter to look for in the String
+     * @return A String array of the split result
+     */
+    private String[] splitData(String toSplit, String delimeter){
+        return Arrays.stream(toSplit.split(delimeter)).map(String::trim).toArray(String[]::new);
     }
 
     /**
@@ -347,7 +381,7 @@ public class ArticleParser {
      * @return true if the raw data contains information about the datasets used, false otherwise.
      */
     private boolean checkDataset() {
-        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength()+1;
+        int idx = this.pRawData.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue()) + TokenType.TOK_DAT_DATASET.getValueLength();
         if(idx >= 0) {
             String checkDatasetContent = this.pRawData.substring(idx, this.pRawData.indexOf("|}}", idx)).trim();
             if(!checkDatasetContent.equalsIgnoreCase("")){
@@ -363,10 +397,10 @@ public class ArticleParser {
      * @return True if the individual dataset data is not blank, false otherwise.
      */
     private boolean checkDataset(String toCheck) {
-        int idx = toCheck.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue())+TokenType.TOK_DAT_DATASET.getValueLength();
+        int idx = toCheck.indexOf(TokenType.TOK_DAT_DATASET.getTokenValue())+TokenType.TOK_DAT_DATASET.getValueLength()+1;
         if(idx >= 0) {
             toCheck = toCheck.substring(idx,toCheck.length());
-            idx = toCheck.indexOf("|}");
+            idx = toCheck.lastIndexOf("|");
             if(idx >= 0) {
                 toCheck = toCheck.substring(0, idx);
                 if(toCheck.length() > 0) {

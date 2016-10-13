@@ -8,10 +8,11 @@ public class Datasets {
     private String dDescription;
     private String dYear;
     private String dType;
-    private String dMethodOfCollection;
-    private String dMethodOfAnalysis;
-    private String dIndustry;
-    private String dCountry;
+    private String[] dDataSources;
+    private String[] dMethodsOfCollection;
+    private String[] dMethodsOfAnalysis;
+    private String[] dIndustry;
+    private String[] dCountries;
     private String dCrossCountry;
     private String dComparative;
     private String dGovernmentOrPolicy;
@@ -64,36 +65,44 @@ public class Datasets {
         this.dDatasets = datasets;
     }
 
-    public String getMethodOfCollection() {
-        return dMethodOfCollection;
+    public String[] getMethodOfCollection() {
+        return dMethodsOfCollection;
     }
 
-    public void setMethodOfCollection(String methodOfCollection) {
-        this.dMethodOfCollection = methodOfCollection;
+    public void setMethodOfCollection(String[] methodsOfCollection) {
+        this.dMethodsOfCollection = methodsOfCollection;
     }
 
-    public String getMethodOfAnalysis() {
-        return dMethodOfAnalysis;
+    public String[] getDataSources() {
+        return this.dDataSources;
     }
 
-    public void setMethodOfAnalysis(String methodOfAnalysis) {
-        this.dMethodOfAnalysis = methodOfAnalysis;
+    public void setDataSources(String[] dataSources) {
+        this.dDataSources = dataSources;
     }
 
-    public String getIndustry() {
+    public String[] getMethodOfAnalysis() {
+        return dMethodsOfAnalysis;
+    }
+
+    public void setMethodOfAnalysis(String[] methodsOfAnalysis) {
+        this.dMethodsOfAnalysis = methodsOfAnalysis;
+    }
+
+    public String[] getIndustry() {
         return dIndustry;
     }
 
-    public void setIndustry(String industry) {
+    public void setIndustry(String[] industry) {
         this.dIndustry = industry;
     }
 
-    public String getCountry() {
-        return dCountry;
+    public String[] getCountries() {
+        return dCountries;
     }
 
-    public void setCountry(String country) {
-        this.dCountry = country;
+    public void setCountry(String[] countries) {
+        this.dCountries = countries;
     }
 
     public String getCrossCountry() {
