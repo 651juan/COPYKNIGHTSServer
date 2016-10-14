@@ -15,8 +15,8 @@ public class Article {
     private String aAbstract;
     private URL[] aLinks;
     private Reference[] aRefences;
-    private String[] aFundamentalIssues;
-    private String[] aEvidenceBasedPolicies;
+    private FundamentalIssue[] aFundamentalIssues;
+    private EvidenceBasedPolicy[] aEvidenceBasedPolicies;
     private String[] aDiscipline;
     private String aRawContent;
     private Datasets aDatasets;
@@ -136,20 +136,20 @@ public class Article {
         this.aDatasets = datasets;
     }
 
-    public String[] getFundamentalIssues() {
+    public FundamentalIssue[] getFundamentalIssues() {
         return this.aFundamentalIssues;
     }
 
-    public void setFundamentalIssues(String[] fundamentalIssues) {
+    public void setFundamentalIssues(FundamentalIssue[] fundamentalIssues) {
         this.aFundamentalIssues = fundamentalIssues;
     }
 
-    public String[] getEvidenceBasedPolicies() {
+    public EvidenceBasedPolicy[] getEvidenceBasedPolicies() {
         return this.aEvidenceBasedPolicies;
     }
 
-    public void setEvidenceBasedPolicies(String[] evidenceBasedPolices) {
-        this.aEvidenceBasedPolicies = evidenceBasedPolices;
+    public void setEvidenceBasedPolicies(EvidenceBasedPolicy[] evidenceBasedPolicies) {
+        this.aEvidenceBasedPolicies = evidenceBasedPolicies;
     }
 
     public String[] getDiscipline() {

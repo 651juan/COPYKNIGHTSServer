@@ -275,18 +275,59 @@ public class ArticleParser {
      * Returns an array of type String of all the fundamental issues the article belongs to
      * @return A String array of fundamental issues
      */
-    private String[] getFundamentalIssues() {
-        String rawIssues = this.getData(TokenType.TOK_FI);
-        return rawIssues.split(",");
+    private FundamentalIssue[] getFundamentalIssues() {
+        String[] rawIssues = this.getData(TokenType.TOK_FI).split(",");
+        FundamentalIssue[] result = new FundamentalIssue[rawIssues.length];
+
+        for(byte i = 0; i < rawIssues.length; i++) {
+            String tmpVal = rawIssues[i];
+
+            if(FundamentalIssue.ISSUE_1.equals(tmpVal)){
+                result[i] = FundamentalIssue.ISSUE_1;
+            }else if(FundamentalIssue.ISSUE_2.equals(tmpVal)) {
+                result[i] = FundamentalIssue.ISSUE_2;
+            }else if(FundamentalIssue.ISSUE_3.equals(tmpVal)) {
+                result[i] = FundamentalIssue.ISSUE_3;
+            }else if(FundamentalIssue.ISSUE_4.equals(tmpVal)) {
+                result[i] = FundamentalIssue.ISSUE_4;
+            }else if(FundamentalIssue.ISSUE_5.equals(tmpVal)){
+                result[i] = FundamentalIssue.ISSUE_5;
+            }else{
+                result[i] = FundamentalIssue.UNKNOWN_ISSUE;
+            }
+        }
+
+        return result;
     }
 
     /**
      * Returns an array of type String of all the evidence based policies the article belongs to
      * @return A String array of evidence based policies
      */
-    private String[] getEvidenceBasedPolicies() {
-        String rawPolicies = this.getData(TokenType.TOK_EBP);
-        return rawPolicies.split(",");
+    private EvidenceBasedPolicy[] getEvidenceBasedPolicies() {
+        String[] rawPolicies = this.getData(TokenType.TOK_EBP).split(",");
+        EvidenceBasedPolicy[] result = new EvidenceBasedPolicy[rawPolicies.length];
+
+        for(byte i = 0; i < rawPolicies.length; i++) {
+            String tmpVal = rawPolicies[i];
+            if(EvidenceBasedPolicy.POLICY_A.equals(tmpVal)){
+                result[i] = EvidenceBasedPolicy.POLICY_A;
+            }else if(EvidenceBasedPolicy.POLICY_B.equals(tmpVal)) {
+                result[i] = EvidenceBasedPolicy.POLICY_B;
+            }else if(EvidenceBasedPolicy.POLICY_C.equals(tmpVal)) {
+                result[i] = EvidenceBasedPolicy.POLICY_C;
+            }else if(EvidenceBasedPolicy.POLICY_D.equals(tmpVal)){
+                result[i] = EvidenceBasedPolicy.POLICY_D;
+            }else if(EvidenceBasedPolicy.POLICY_E.equals(tmpVal)){
+                result[i] = EvidenceBasedPolicy.POLICY_E;
+            }else if(EvidenceBasedPolicy.POLICY_F.equals(tmpVal)) {
+                result[i] = EvidenceBasedPolicy.POLICY_F;
+            }else {
+                result [i] = EvidenceBasedPolicy.UNKNOWN_POLICY;
+            }
+        }
+
+        return result;
     }
     /**
      * Returns an Array of Dataset objects which contain individual dataset data if any are available in the raw data.
