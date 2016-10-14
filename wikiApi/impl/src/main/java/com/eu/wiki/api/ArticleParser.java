@@ -272,8 +272,8 @@ public class ArticleParser {
     }
 
     /**
-     * Returns an array of type String of all the fundamental issues the article belongs to
-     * @return A String array of fundamental issues
+     * Returns an array of type FundamentalIssue of all the fundamental issues the article belongs to
+     * @return A FundamentalIssue array of fundamental issues
      */
     private FundamentalIssue[] getFundamentalIssues() {
         String[] rawIssues = this.getData(TokenType.TOK_FI).split(",");
@@ -301,8 +301,8 @@ public class ArticleParser {
     }
 
     /**
-     * Returns an array of type String of all the evidence based policies the article belongs to
-     * @return A String array of evidence based policies
+     * Returns an array of type EvidenceBasedPolicy of all the evidence based policies the article belongs to
+     * @return An EvidenceBasedPolicy array of evidence based policies
      */
     private EvidenceBasedPolicy[] getEvidenceBasedPolicies() {
         String[] rawPolicies = this.getData(TokenType.TOK_EBP).split(",");
