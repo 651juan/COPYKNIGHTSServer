@@ -7,8 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -55,5 +54,39 @@ public class ArticleFacadeImpl implements ArticleFacade {
         Query q = new Query();
         q.setAll(true);
         return facade.query(q);
+    }
+
+    //Start of graphing info functions
+
+    @Override
+    public ArticleList getArticlesInYear(int year) {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        List<Article> result = new ArrayList<>();
+
+        for(Article article : allArticles) {
+            if(article.getIntYear() == year) {
+                result.add(article);
+            }
+        }
+        return new ArticleList(result);
+    }
+
+    public Map<Integer, Integer> getArticleYearCount() {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        Map<Integer, Integer> tmpResult = new HashMap<>();
+
+        for(Article article : allArticles) {
+            int tmpYear = article.getIntYear();
+
+            if(tmpResult.containsKey(tmpYear)) {
+                int tmp = tmpResult.get(tmpYear);
+                tmp ++;
+                tmpResult.put(tmpYear, tmp);
+            }else{
+                tmpResult.put(tmpYear,1);
+            }
+        }
+
+        return tmpResult;
     }
 }

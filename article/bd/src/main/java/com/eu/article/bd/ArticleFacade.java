@@ -1,5 +1,7 @@
 package com.eu.article.bd;
 import java.util.List;
+import java.util.Map;
+
 import com.eu.wiki.api.ArticleList;
 
 /**
@@ -26,4 +28,20 @@ public interface ArticleFacade {
      * @return {@link ArticleList}
      */
     ArticleList getAllArticles();
+
+    //Start of graphing info functions
+
+    /**
+     * Returns an Article List object containing all the articles published in a given year
+     * @param year the year to query
+     * @return An Article List Object containing all the articles of a given year
+     */
+    ArticleList getArticlesInYear(int year);
+
+    /**
+     * Returns a 2D String Array Containing the year in the first column and the count
+     * of the articles that where published in that year in the second column
+     * @return a 2D String Array
+     */
+    Map<Integer, Integer> getArticleYearCount();
 }

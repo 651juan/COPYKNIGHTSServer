@@ -3,13 +3,12 @@ package com.eu.article.web;
 import com.eu.article.bd.ArticleFacade;
 import com.eu.article.impl.ArticleFacadeImpl;
 import com.eu.wiki.api.ArticleList;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 
 /**
  * The controller for requests relating to the parsing of Articles.
@@ -22,6 +21,18 @@ public class ArticleController {
     private static final String URL_TO_WIKI = "http://www.copyrightevidence.org/evidence-wiki/api.php";
     private static final LocalDateTime expiry = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.now());
     private ArticleFacade facade;
+
+    @RequestMapping(value = "/year")
+    public Map<Integer, Integer> getArticleYearCount() {
+        initialiseFacade();
+        return facade.getArticleYearCount();
+    }
+
+    @RequestMapping(value = "/year/{yearToGet}", method=RequestMethod.GET)
+    public ArticleList getArticlesInYear(@PathVariable("yearToGet") int year) {
+        initialiseFacade();
+        return facade.getArticlesInYear(year);
+    }
 
     @RequestMapping(value="/article", params="title")
     public ArticleList articleByTitle(@RequestParam("title") String titles) {

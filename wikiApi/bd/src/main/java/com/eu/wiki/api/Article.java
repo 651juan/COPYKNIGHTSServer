@@ -72,6 +72,14 @@ public class Article {
         this.aAuthors = authors;
     }
 
+    public int getIntYear() {
+        try{
+            return Integer.valueOf(this.aYear);
+        }catch(Exception e) {
+            return -1;
+        }
+    }
+
     public String getYear() {
         return aYear;
     }
