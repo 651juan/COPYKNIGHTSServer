@@ -29,19 +29,32 @@ public interface ArticleFacade {
      */
     ArticleList getAllArticles();
 
-    //Start of graphing info functions
-
     /**
-     * Returns an Article List object containing all the articles published in a given year
+     * Returns an {@link ArticleList} containing all the articles published in a given year
      * @param year the year to query
-     * @return An Article List Object containing all the articles of a given year
+     * @return An {@link ArticleList} containing all the articles of a given year
      */
     ArticleList getArticlesInYear(int year);
 
     /**
-     * Returns a 2D String Array Containing the year in the first column and the count
-     * of the articles that where published in that year in the second column
-     * @return a 2D String Array
+     * Returns a @{@link Map} Containing the year as a key and the count
+     * of the articles that where published in that year in as values
+     * @return a @{@link Map}
      */
-    Map<Integer, Integer> getArticleYearCount();
+    Map<String, Integer> getArticleYearCount();
+
+    /**
+     * Returns an {@link ArticleList} containing all the articles published by the author.
+     * @param author the author to query
+     * @return An {@link ArticleList} containing all the articles of a given year
+     */
+    ArticleList getArticlesbyAuthor(String author);
+
+    /**
+     * Returns a @{@link Map} Containing the author as a key and the count
+     * of the articles that where published in that year in as values
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getArticleAuthorCount();
+
 }

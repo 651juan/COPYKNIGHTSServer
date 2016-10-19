@@ -23,7 +23,7 @@ public class ArticleController {
     private ArticleFacade facade;
 
     @RequestMapping(value = "/year")
-    public Map<Integer, Integer> getArticleYearCount() {
+    public Map<String, Integer> getArticleYearCount() {
         initialiseFacade();
         return facade.getArticleYearCount();
     }
@@ -32,6 +32,18 @@ public class ArticleController {
     public ArticleList getArticlesInYear(@PathVariable("yearToGet") int year) {
         initialiseFacade();
         return facade.getArticlesInYear(year);
+    }
+
+    @RequestMapping(value = "/author")
+    public Map<String, Integer> getArticleAuthorCount() {
+        initialiseFacade();
+        return facade.getArticleAuthorCount();
+    }
+
+    @RequestMapping(value = "/author/{authorToGet}", method=RequestMethod.GET)
+    public ArticleList getArticlesInYear(@PathVariable("authorToGet") String author) {
+        initialiseFacade();
+        return facade.getArticlesbyAuthor(author);
     }
 
     @RequestMapping(value="/article", params="title")

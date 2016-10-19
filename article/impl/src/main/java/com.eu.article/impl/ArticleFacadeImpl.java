@@ -56,34 +56,56 @@ public class ArticleFacadeImpl implements ArticleFacade {
         return facade.query(q);
     }
 
-    //Start of graphing info functions
-
     @Override
     public ArticleList getArticlesInYear(int year) {
         List<Article> allArticles =  this.getAllArticles().getArticles();
-        List<Article> result = new ArrayList<>();
+        List<Article> result = allArticles.stream().filter(article -> article.getIntYear() == year).collect(Collectors.toList());
 
-        for(Article article : allArticles) {
-            if(article.getIntYear() == year) {
-                result.add(article);
-            }
-        }
         return new ArticleList(result);
     }
 
-    public Map<Integer, Integer> getArticleYearCount() {
+    @Override
+    public Map<String, Integer> getArticleYearCount() {
         List<Article> allArticles =  this.getAllArticles().getArticles();
-        Map<Integer, Integer> tmpResult = new HashMap<>();
+        Map<String, Integer> tmpResult = new HashMap<>();
 
         for(Article article : allArticles) {
-            int tmpYear = article.getIntYear();
+            String tmpYear = article.getYear();
 
-            if(tmpResult.containsKey(tmpYear)) {
-                int tmp = tmpResult.get(tmpYear);
-                tmp ++;
-                tmpResult.put(tmpYear, tmp);
-            }else{
-                tmpResult.put(tmpYear,1);
+            incrementCountToMap(tmpResult, tmpYear);
+        }
+
+        return tmpResult;
+    }
+
+    private void incrementCountToMap(Map<String, Integer> map, String tmpValue) {
+        if(map.containsKey(tmpValue)) {
+            int tmp = map.get(tmpValue);
+            tmp ++;
+            map.put(tmpValue, tmp);
+        }else{
+            map.put(tmpValue,1);
+        }
+    }
+
+    @Override
+    public ArticleList getArticlesbyAuthor(String author) {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        List<Article> result = allArticles.stream().filter(article -> Arrays.asList(article.getAuthors()).contains(author)
+        ).collect(Collectors.toList());
+
+        return new ArticleList(result);
+    }
+
+    @Override
+    public Map<String, Integer> getArticleAuthorCount() {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        Map<String, Integer> tmpResult = new HashMap<>();
+
+        for(Article article : allArticles) {
+            String[] tmpAuthors = article.getAuthors();
+            for (String tmpAuthor : tmpAuthors) {
+                incrementCountToMap(tmpResult, tmpAuthor);
             }
         }
 

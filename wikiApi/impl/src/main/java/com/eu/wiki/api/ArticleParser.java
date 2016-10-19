@@ -216,8 +216,8 @@ public class ArticleParser {
         String[] splitAuthors = rawAuthors.split(";");
 
         for(String author:splitAuthors){
-            if(author.contains("and")) {
-                String[] furtherSplit = author.split("and");
+            if(author.contains(" and ")) {
+                String[] furtherSplit = author.split(" and ");
                 for(String subauthor:furtherSplit) {
                     tmpResult.add(subauthor.trim());
                 }
