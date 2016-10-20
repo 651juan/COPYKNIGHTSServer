@@ -22,6 +22,18 @@ public class ArticleController {
     private static final LocalDateTime expiry = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.now());
     private ArticleFacade facade;
 
+    @RequestMapping(value = "/industry")
+    public Map<String, Integer> getIndustryCount() {
+        initialiseFacade();
+        return facade.getArticleIndustryCount();
+    }
+
+    @RequestMapping(value = "/industry/{industryToGet}", method=RequestMethod.GET)
+    public ArticleList getArticlesInIndustry(@PathVariable("industryToGet") String industry) {
+        initialiseFacade();
+        return facade.getArticlesInIndustry(industry);
+    }
+
     @RequestMapping(value = "/year")
     public Map<String, Integer> getArticleYearCount() {
         initialiseFacade();
@@ -43,7 +55,7 @@ public class ArticleController {
     @RequestMapping(value = "/author/{authorToGet}", method=RequestMethod.GET)
     public ArticleList getArticlesInYear(@PathVariable("authorToGet") String author) {
         initialiseFacade();
-        return facade.getArticlesbyAuthor(author);
+        return facade.getArticlesByAuthor(author);
     }
 
     @RequestMapping(value="/article", params="title")

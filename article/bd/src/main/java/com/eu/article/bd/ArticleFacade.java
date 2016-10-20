@@ -37,6 +37,14 @@ public interface ArticleFacade {
     ArticleList getArticlesInYear(int year);
 
     /**
+     * Returns an {@link ArticleList} containing all the articles published in an industry
+     * @param industry the industry to query
+     * @return An {@link ArticleList} containing all the articles published in an industry
+     */
+    ArticleList getArticlesInIndustry(String industry);
+
+
+    /**
      * Returns a @{@link Map} Containing the year as a key and the count
      * of the articles that where published in that year in as values
      * @return a @{@link Map}
@@ -48,13 +56,20 @@ public interface ArticleFacade {
      * @param author the author to query
      * @return An {@link ArticleList} containing all the articles of a given year
      */
-    ArticleList getArticlesbyAuthor(String author);
+    ArticleList getArticlesByAuthor(String author);
 
     /**
      * Returns a @{@link Map} Containing the author as a key and the count
-     * of the articles that where published in that year in as values
+     * of the articles that where published by that author as values
      * @return a @{@link Map}
      */
     Map<String, Integer> getArticleAuthorCount();
+
+    /**
+     * Returns @{@link Map} Containing the Industry as a key and the count of
+     * the articles of that industry.
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getArticleIndustryCount();
 
 }

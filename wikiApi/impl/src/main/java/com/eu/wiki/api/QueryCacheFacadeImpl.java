@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
  */
 public class QueryCacheFacadeImpl implements QueryCacheFacade {
     private HashMap<Integer, Article> cache;
+    private HashMap<String, Integer> yearCache;
+    private HashMap<String, Integer> authorCache;
+    private HashMap<String, Integer> industryCache;
     private LocalDateTime  lastUpdated;
     private LocalDateTime expiryPeriod;
     private QueryFacade queryFacade;
@@ -20,6 +23,9 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
         this.expiryPeriod = expiryPeriod;
         this.queryFacade = new QueryFacadeImpl(url);
         this.cache = new HashMap<>();
+        this.yearCache = new HashMap<>();
+        this.authorCache = new HashMap<>();
+        this.industryCache = new HashMap<>();
         initialiseCache();
     }
 
@@ -83,7 +89,41 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
         }
         cache.putAll(output.getArticles().stream()
                 .collect(Collectors.toMap(Article::getPageid, Function.identity())));
+
+        for(Article article : output.getArticles()) {
+            String tmpYear = article.getYear();
+            incrementCountToMap(yearCache, tmpYear);
+        }
+
+        for(Article article : output.getArticles()) {
+            String[] tmpAuthor = article.getAuthors();
+            for(String author : tmpAuthor) {
+                incrementCountToMap(authorCache, author);
+            }
+        }
+
+        for(Article article : output.getArticles()) {
+            if (article.getDatasets() != null) {
+                String[] tmpIndustry = article.getDatasets().getIndustry();
+                for (String industry : tmpIndustry) {
+                    incrementCountToMap(industryCache, industry);
+                }
+            } else {
+                incrementCountToMap(industryCache, "");
+            }
+        }
+     }
+
+    private void incrementCountToMap(Map<String, Integer> map, String tmpValue) {
+        if(map.containsKey(tmpValue)) {
+            int tmp = map.get(tmpValue);
+            tmp ++;
+            map.put(tmpValue, tmp);
+        }else{
+            map.put(tmpValue,1);
+        }
     }
+
 
     /**
      * Generates a query to be used to obtain all studies.
@@ -112,4 +152,28 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
                 .collect(Collectors.toList()));
         return q;
     }
- }
+
+    @Override
+    public Map<String, Integer> getYearCount() {
+        if (checkExpiry())  {
+            initialiseCache();
+        }
+        return yearCache;
+    }
+
+    @Override
+    public Map<String, Integer> getAuthorCount() {
+        if (checkExpiry())  {
+            initialiseCache();
+        }
+        return authorCache;
+    }
+
+    @Override
+    public Map<String, Integer> getIndustryCount() {
+        if (checkExpiry())  {
+            initialiseCache();
+        }
+        return industryCache;
+    }
+}

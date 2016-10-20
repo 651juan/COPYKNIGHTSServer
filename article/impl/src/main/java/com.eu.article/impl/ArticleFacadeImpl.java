@@ -65,31 +65,32 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     @Override
-    public Map<String, Integer> getArticleYearCount() {
+    public ArticleList getArticlesInIndustry(String industry) {
         List<Article> allArticles =  this.getAllArticles().getArticles();
-        Map<String, Integer> tmpResult = new HashMap<>();
+        List<Article> result = allArticles.stream().filter(article ->
+        {
+          if (article.getDatasets() != null) {
+              if (industry.equals( "null")) {
+                  return Arrays.asList(article.getDatasets().getIndustry()).contains("");
+              } else{
+                  return Arrays.asList(article.getDatasets().getIndustry()).contains(industry);
+              }
+          } else {
+              if (industry.equals("null")) return true;
+          }
+          return false;
+        }).collect(Collectors.toList());
 
-        for(Article article : allArticles) {
-            String tmpYear = article.getYear();
-
-            incrementCountToMap(tmpResult, tmpYear);
-        }
-
-        return tmpResult;
-    }
-
-    private void incrementCountToMap(Map<String, Integer> map, String tmpValue) {
-        if(map.containsKey(tmpValue)) {
-            int tmp = map.get(tmpValue);
-            tmp ++;
-            map.put(tmpValue, tmp);
-        }else{
-            map.put(tmpValue,1);
-        }
+        return new ArticleList(result);
     }
 
     @Override
-    public ArticleList getArticlesbyAuthor(String author) {
+    public Map<String, Integer> getArticleYearCount() {
+        return facade.getYearCount();
+    }
+
+    @Override
+    public ArticleList getArticlesByAuthor(String author) {
         List<Article> allArticles =  this.getAllArticles().getArticles();
         List<Article> result = allArticles.stream().filter(article -> Arrays.asList(article.getAuthors()).contains(author)
         ).collect(Collectors.toList());
@@ -99,16 +100,11 @@ public class ArticleFacadeImpl implements ArticleFacade {
 
     @Override
     public Map<String, Integer> getArticleAuthorCount() {
-        List<Article> allArticles =  this.getAllArticles().getArticles();
-        Map<String, Integer> tmpResult = new HashMap<>();
+        return facade.getAuthorCount();
+    }
 
-        for(Article article : allArticles) {
-            String[] tmpAuthors = article.getAuthors();
-            for (String tmpAuthor : tmpAuthors) {
-                incrementCountToMap(tmpResult, tmpAuthor);
-            }
-        }
-
-        return tmpResult;
+    @Override
+    public Map<String, Integer> getArticleIndustryCount() {
+        return facade.getIndustryCount();
     }
 }
