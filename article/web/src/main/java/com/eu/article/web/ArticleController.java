@@ -22,6 +22,18 @@ public class ArticleController {
     private static final LocalDateTime expiry = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.now());
     private ArticleFacade facade;
 
+    @RequestMapping(value = "/fundamental")
+    public Map<String, Integer> getFundamentalIssueCount() {
+        initialiseFacade();
+        return facade.getArticleFundamentalIssueCount();
+    }
+
+    @RequestMapping(value = "/fundamental/{fundamentalToGet}", method=RequestMethod.GET)
+    public ArticleList getArticlesByFundamental(@PathVariable("fundamentalToGet") String fundamental) {
+        initialiseFacade();
+        return facade.getArticlesInFundamental(fundamental);
+    }
+
     @RequestMapping(value = "/industry")
     public Map<String, Integer> getIndustryCount() {
         initialiseFacade();

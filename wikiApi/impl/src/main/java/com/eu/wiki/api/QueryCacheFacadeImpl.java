@@ -14,6 +14,7 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
     private HashMap<String, Integer> yearCache;
     private HashMap<String, Integer> authorCache;
     private HashMap<String, Integer> industryCache;
+    private HashMap<String, Integer> fundamentalCache;
     private LocalDateTime  lastUpdated;
     private LocalDateTime expiryPeriod;
     private QueryFacade queryFacade;
@@ -26,6 +27,7 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
         this.yearCache = new HashMap<>();
         this.authorCache = new HashMap<>();
         this.industryCache = new HashMap<>();
+        this.fundamentalCache = new HashMap<>();
         initialiseCache();
     }
 
@@ -73,7 +75,7 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
     }
 
     /**
-     * Gets all articles from the wiki and stores them in the cache.
+     * Gets all articles from the wiki and stores them in the different caches to reduce processing on subsequent requests
      */
     private void initialiseCache() {
         lastUpdated = LocalDateTime.now();
@@ -110,6 +112,16 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
                 }
             } else {
                 incrementCountToMap(industryCache, "");
+            }
+        }
+
+        for (Article article : output.getArticles()) {
+            for (FundamentalIssue fund : article.getFundamentalIssues()) {
+                if (fund == null) {
+                    incrementCountToMap(fundamentalCache, "");
+                } else {
+                    incrementCountToMap(fundamentalCache, fund.toString());
+                }
             }
         }
      }
@@ -176,4 +188,14 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
         }
         return industryCache;
     }
+
+    @Override
+    public Map<String, Integer> getFundamentalIssueCount() {
+        if (checkExpiry())  {
+            initialiseCache();
+        }
+        return fundamentalCache;
+    }
+
+
 }
