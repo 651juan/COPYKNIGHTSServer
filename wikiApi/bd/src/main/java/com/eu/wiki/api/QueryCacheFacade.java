@@ -40,4 +40,13 @@ interface QueryCacheFacade {
      * @return a @{@link Map}
      */
     Map<String, Integer> getIndustryCount();
+
+    /**
+     * Returns a @{@link Map} Containing the @{@link FundamentalIssue} as a key and the count
+     * of the articles that are related to that issue. If the cache is not expired
+     * it returns the cache else it will refresh the cache before.
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getFundamentalIssueCount();
+
 }

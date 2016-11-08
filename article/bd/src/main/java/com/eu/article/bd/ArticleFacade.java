@@ -43,6 +43,13 @@ public interface ArticleFacade {
      */
     ArticleList getArticlesInIndustry(String industry);
 
+    /**
+     * Returns an {@link ArticleList} containing all the articles published in an fundamental issue.
+     * @param fundamental the fundamental issue to query
+     * @return An {@link ArticleList} containing all the articles published in an fundamental issue
+     */
+    ArticleList getArticlesInFundamental(String fundamental);
+
 
     /**
      * Returns a @{@link Map} Containing the year as a key and the count
@@ -71,5 +78,12 @@ public interface ArticleFacade {
      * @return a @{@link Map}
      */
     Map<String, Integer> getArticleIndustryCount();
+
+    /**
+     * Returns @{@link Map} Containing the Fundamental Issue as a key and the count of
+     * the articles of that Fundamental Issue.
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getArticleFundamentalIssueCount();
 
 }

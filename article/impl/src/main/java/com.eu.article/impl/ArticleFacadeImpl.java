@@ -85,6 +85,16 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     @Override
+    public ArticleList getArticlesInFundamental(String fundamental) {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        List<Article> result = allArticles.stream().filter(article -> Arrays.asList(article.getFundamentalIssues())
+                .contains(FundamentalIssue.valueOf(fundamental)))
+                .collect(Collectors.toList());
+
+        return new ArticleList(result);
+    }
+
+    @Override
     public Map<String, Integer> getArticleYearCount() {
         return facade.getYearCount();
     }
@@ -106,5 +116,10 @@ public class ArticleFacadeImpl implements ArticleFacade {
     @Override
     public Map<String, Integer> getArticleIndustryCount() {
         return facade.getIndustryCount();
+    }
+
+    @Override
+    public Map<String, Integer> getArticleFundamentalIssueCount() {
+        return facade.getFundamentalIssueCount();
     }
 }
