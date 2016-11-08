@@ -153,8 +153,9 @@ public class ArticleParser {
 
         this.pRawData = shortArticle.getRawContent();
 
-        boolean[] tmpVector = new boolean[34];
-        Arrays.fill(tmpVector, false);
+        int enumLengths = FundamentalIssue.values().length + EvidenceBasedPolicy.values().length+Industry.values().length+MethodOfCollection.values().length+MethodOfAnalysis.values().length;
+        byte[] tmpVector = new byte[enumLengths];
+        Arrays.fill(tmpVector, (byte)0);
 
         //Start parsing
         shortArticle.setYear(this.getData(TokenType.TOK_YEAR));
@@ -170,8 +171,11 @@ public class ArticleParser {
         shortArticle.setEvidenceBasedPolicies(tmpEVP);
         shortArticle.setDiscipline(this.splitData(this.getData(TokenType.TOK_DISCIPLINE), ","));
 
-        tmpVector = this.setFIVector(tmpVector, tmpFI, 0);
-        tmpVector = this.setEBPVector(tmpVector, tmpEVP, 6);
+        int tmpCIdx = 0;
+        tmpVector = this.setFIVector(tmpVector, tmpFI, tmpCIdx);
+        tmpCIdx = FundamentalIssue.values().length;
+        tmpVector = this.setEBPVector(tmpVector, tmpEVP, tmpCIdx);
+        tmpCIdx += EvidenceBasedPolicy.values().length;
 
         //Start parsing datasets
         if (this.checkDataset()) {
@@ -181,9 +185,12 @@ public class ArticleParser {
             String dataType = this.getData(TokenType.TOK_DAT_TYPE);
             myDatasets = new Datasets(dataDescription, dataYear, dataType);
             myDatasets.setDataSources(this.splitData(this.getData(TokenType.TOK_DAT_SOURCES), ";"));
-            myDatasets.setMethodOfCollection(this.getMOC(this.splitData(this.getData(TokenType.TOK_DAT_MOC), ",")));
-            myDatasets.setMethodOfAnalysis(this.getMOA(this.splitData(this.getData(TokenType.TOK_DAT_MOA), ",")));
-            myDatasets.setIndustry(this.getIndustries(this.splitData(this.getData(TokenType.TOK_DAT_INDUSTRY), ";")));
+            MethodOfCollection[] tmpMOC = this.getMOC(this.splitData(this.getData(TokenType.TOK_DAT_MOC), ","));
+            myDatasets.setMethodOfCollection(tmpMOC);
+            MethodOfAnalysis[] tmpMOA = this.getMOA(this.splitData(this.getData(TokenType.TOK_DAT_MOA), ","));
+            myDatasets.setMethodOfAnalysis(tmpMOA);
+            Industry[] tmpIndustry = this.getIndustries(this.splitData(this.getData(TokenType.TOK_DAT_INDUSTRY), ";"));
+            myDatasets.setIndustry(tmpIndustry);
             myDatasets.setCountry(this.splitData(this.getData(TokenType.TOK_DAT_COUNTRY), ";"));
             myDatasets.setCrossCountry(this.getData(TokenType.TOK_DAT_CROSS_COUNTRY));
             myDatasets.setComparative(this.getData(TokenType.TOK_DAT_COMPARATIVE));
@@ -191,12 +198,20 @@ public class ArticleParser {
             myDatasets.setLiteratureReview(this.getData(TokenType.TOK_DAT_LR));
             myDatasets.setFundedBy(this.getData(TokenType.TOK_DAT_FUNDED));
 
+            tmpVector = this.setIndustryVector(tmpVector, tmpIndustry, tmpCIdx);
+            tmpCIdx += Industry.values().length;
+            tmpVector = this.setMOCVector(tmpVector, tmpMOC, tmpCIdx);
+            tmpCIdx += MethodOfCollection.values().length;
+            tmpVector = this.setMOAVector(tmpVector, tmpMOA, tmpCIdx);
+
             myDatasets.setDatasets(this.getDatasets());
             shortArticle.setDatasets(myDatasets);
         }
+
+        shortArticle.setVector(tmpVector);
         //Remove raw data
         shortArticle.setRawContent("");
-
+        
         return shortArticle;
     }
 
@@ -284,16 +299,22 @@ public class ArticleParser {
      * @return A MethodOfCollection array of Methods of collection
      */
     private MethodOfCollection[] getMOC(String[] moc) {
-        //TODO add sub methods of collection?
-        //MethodOfCollection[] result = new MethodOfCollection[moc.length];
-        MethodOfCollection[] result = new MethodOfCollection[1];
+        MethodOfCollection[] result = new MethodOfCollection[moc.length];
+        MethodOfCollection[] mocEnumValues = MethodOfCollection.values();
+        for(int i = 0; i < moc.length; i++) {
+            String tmpVal = moc[i];
+            boolean matched = false;
+            for(int j = 0; j < mocEnumValues.length; j++) {
+                if(mocEnumValues[j].equals(tmpVal)) {
+                    result[i] = mocEnumValues[j];
+                    matched = true;
+                    break;
+                }
+            }
 
-        if(Arrays.asList(moc).contains("Quantitative Collection Methods")){
-            result[0] = MethodOfCollection.MOC_1;
-        }else if(Arrays.asList(moc).contains("Qualitative Collection Methods")) {
-            result[0] = MethodOfCollection.MOC_2;
-        }else {
-            result[0] = MethodOfCollection.UNKNOWN_MOC;
+            if(matched == false) {
+                result[i] = MethodOfCollection.UNKNOWN_MOC;
+            }
         }
         return result;
     }
@@ -303,16 +324,22 @@ public class ArticleParser {
      * @return A MethodOfAnalysis array of Industries
      */
     private MethodOfAnalysis[] getMOA(String[] moa) {
-        //TODO add sub methods of analysis?
-        //MethodOfAnalysis[] result = new MethodOfAnalysis[moa.length];
-        MethodOfAnalysis[] result = new MethodOfAnalysis[1];
+        MethodOfAnalysis[] result = new MethodOfAnalysis[moa.length];
+        MethodOfAnalysis[] moaEnumValues = MethodOfAnalysis.values();
+        for(int i = 0; i < moa.length; i++) {
+            String tmpVal = moa[i];
+            boolean matched = false;
+            for(int j = 0; j < moaEnumValues.length; j++) {
+                if(moaEnumValues[j].equals(tmpVal)) {
+                    result[i] = moaEnumValues[j];
+                    matched = true;
+                    break;
+                }
+            }
 
-        if(Arrays.asList(moa).contains("Quantitative Analysis Methods")){
-            result[0] = MethodOfAnalysis.MOA_1;
-        }else if(Arrays.asList(moa).contains("Qualitative Collection Methods")) {
-            result[0] = MethodOfAnalysis.MOA_2;
-        }else {
-            result[0] = MethodOfAnalysis.UNKNOWN_MOA;
+            if(matched == false) {
+                result[i] = MethodOfAnalysis.UNKNOWN_MOA;
+            }
         }
         return result;
     }
@@ -323,47 +350,22 @@ public class ArticleParser {
      */
     private Industry[] getIndustries(String[] industries) {
         Industry[] result = new Industry[industries.length];
-
+        Industry[] industryEnumValues = Industry.values();
         for(int i = 0; i < industries.length; i++) {
             String tmpVal = industries[i];
+            boolean matched = false;
+            for(int j = 0; j < industryEnumValues.length; j++) {
+                if(industryEnumValues[j].equals(tmpVal)) {
+                    result[i] = industryEnumValues[j];
+                    matched = true;
+                    break;
+                }
+            }
 
-            if(Industry.INDUSTRY_1.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_1;
-            }else if(Industry.INDUSTRY_2.equals(tmpVal)) {
-                result[i] = Industry.INDUSTRY_2;
-            }else if(Industry.INDUSTRY_3.equals(tmpVal)) {
-                result[i] = Industry.INDUSTRY_3;
-            }else if(Industry.INDUSTRY_4.equals(tmpVal)) {
-                result[i] = Industry.INDUSTRY_4;
-            }else if(Industry.INDUSTRY_5.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_5;
-            }else if(Industry.INDUSTRY_6.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_6;
-            }else if(Industry.INDUSTRY_7.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_7;
-            }else if(Industry.INDUSTRY_8.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_8;
-            }else if(Industry.INDUSTRY_9.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_9;
-            }else if(Industry.INDUSTRY_10.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_10;
-            }else if(Industry.INDUSTRY_11.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_11;
-            }else if(Industry.INDUSTRY_12.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_12;
-            }else if(Industry.INDUSTRY_13.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_13;
-            }else if(Industry.INDUSTRY_14.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_14;
-            }else if(Industry.INDUSTRY_15.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_15;
-            }else if(Industry.INDUSTRY_16.equals(tmpVal)){
-                result[i] = Industry.INDUSTRY_16;
-            }else{
+            if(matched == false) {
                 result[i] = Industry.UNKNOWN_INDUSTRY;
             }
         }
-
         return result;
     }
 
@@ -374,21 +376,22 @@ public class ArticleParser {
     private FundamentalIssue[] getFundamentalIssues() {
         String[] rawIssues = this.getData(TokenType.TOK_FI).split(",");
         FundamentalIssue[] result = new FundamentalIssue[rawIssues.length];
+        FundamentalIssue[] fiEnumValues = FundamentalIssue.values();
+
 
         for(byte i = 0; i < rawIssues.length; i++) {
             String tmpVal = rawIssues[i];
 
-            if(FundamentalIssue.ISSUE_1.equals(tmpVal)){
-                result[i] = FundamentalIssue.ISSUE_1;
-            }else if(FundamentalIssue.ISSUE_2.equals(tmpVal)) {
-                result[i] = FundamentalIssue.ISSUE_2;
-            }else if(FundamentalIssue.ISSUE_3.equals(tmpVal)) {
-                result[i] = FundamentalIssue.ISSUE_3;
-            }else if(FundamentalIssue.ISSUE_4.equals(tmpVal)) {
-                result[i] = FundamentalIssue.ISSUE_4;
-            }else if(FundamentalIssue.ISSUE_5.equals(tmpVal)){
-                result[i] = FundamentalIssue.ISSUE_5;
-            }else{
+            boolean matched = false;
+            for(int j = 0; j < fiEnumValues.length; j++) {
+                if(fiEnumValues[j].equals(tmpVal)) {
+                    result[i] = fiEnumValues[j];
+                    matched = true;
+                    break;
+                }
+            }
+
+            if(matched == false) {
                 result[i] = FundamentalIssue.UNKNOWN_ISSUE;
             }
         }
@@ -403,23 +406,21 @@ public class ArticleParser {
     private EvidenceBasedPolicy[] getEvidenceBasedPolicies() {
         String[] rawPolicies = this.getData(TokenType.TOK_EBP).split(",");
         EvidenceBasedPolicy[] result = new EvidenceBasedPolicy[rawPolicies.length];
+        EvidenceBasedPolicy[] ebpEnumValues = EvidenceBasedPolicy.values();
 
         for(byte i = 0; i < rawPolicies.length; i++) {
             String tmpVal = rawPolicies[i];
-            if(EvidenceBasedPolicy.POLICY_A.equals(tmpVal)){
-                result[i] = EvidenceBasedPolicy.POLICY_A;
-            }else if(EvidenceBasedPolicy.POLICY_B.equals(tmpVal)) {
-                result[i] = EvidenceBasedPolicy.POLICY_B;
-            }else if(EvidenceBasedPolicy.POLICY_C.equals(tmpVal)) {
-                result[i] = EvidenceBasedPolicy.POLICY_C;
-            }else if(EvidenceBasedPolicy.POLICY_D.equals(tmpVal)){
-                result[i] = EvidenceBasedPolicy.POLICY_D;
-            }else if(EvidenceBasedPolicy.POLICY_E.equals(tmpVal)){
-                result[i] = EvidenceBasedPolicy.POLICY_E;
-            }else if(EvidenceBasedPolicy.POLICY_F.equals(tmpVal)) {
-                result[i] = EvidenceBasedPolicy.POLICY_F;
-            }else {
-                result [i] = EvidenceBasedPolicy.UNKNOWN_POLICY;
+            boolean matched = false;
+            for(int j = 0; j < ebpEnumValues.length; j++) {
+                if(ebpEnumValues[j].equals(tmpVal)) {
+                    result[i] = ebpEnumValues[j];
+                    matched = true;
+                    break;
+                }
+            }
+
+            if(matched == false) {
+                result[i] = EvidenceBasedPolicy.UNKNOWN_POLICY;
             }
         }
 
@@ -554,25 +555,14 @@ public class ArticleParser {
      * @param currentVector The current state of the vector
      * @param fiArr The Fundamental Issues assigned to the current article
      * @param startIdx The start index of where the Fundamental Issues is located in the vector
-     * @return An updated boolean[] vector
+     * @return An updated byte[] vector
      */
-    private boolean[] setFIVector(boolean[] currentVector, FundamentalIssue[] fiArr, int startIdx) {
-        for(FundamentalIssue fi : fiArr) {
-            if(fi == FundamentalIssue.ISSUE_1){
-                currentVector[startIdx] = true;
-            }else if(fi == FundamentalIssue.ISSUE_2) {
-                currentVector[startIdx+1] = true;
-            }else if(fi ==FundamentalIssue.ISSUE_3) {
-                currentVector[startIdx+2] = true;
-            }else if(fi == FundamentalIssue.ISSUE_4) {
-                currentVector[startIdx+3] = true;
-            }else if(fi == FundamentalIssue.ISSUE_5){
-                currentVector[startIdx+4] = true;
-            }else{
-                currentVector[startIdx+5] = true;
+    private byte[] setFIVector(byte[] currentVector, FundamentalIssue[] fiArr, int startIdx) {
+        if(fiArr != null) {
+            for (FundamentalIssue fi : fiArr) {
+                currentVector[startIdx + fi.getIndex()] = 1;
             }
         }
-
         return currentVector;
     }
 
@@ -581,26 +571,64 @@ public class ArticleParser {
      * @param currentVector The current state of the vector
      * @param ebpArr The Evidence Policies assigned to the current article
      * @param startIdx The start index of where the Evidence Based Policies is located in the vector
-     * @return An updated boolean[] vector
+     * @return An updated byte[] vector
      */
-    private boolean[] setEBPVector(boolean[] currentVector, EvidenceBasedPolicy[] ebpArr, int startIdx) {
-        for(EvidenceBasedPolicy ebp : ebpArr) {
-            if(ebp == EvidenceBasedPolicy.POLICY_A){
-                currentVector[startIdx] = true;
-            }else if(ebp == EvidenceBasedPolicy.POLICY_B) {
-                currentVector[startIdx+1] = true;
-            }else if(ebp == EvidenceBasedPolicy.POLICY_C) {
-                currentVector[startIdx+2] = true;
-            }else if(ebp == EvidenceBasedPolicy.POLICY_D){
-                currentVector[startIdx+3] = true;
-            }else if(ebp == EvidenceBasedPolicy.POLICY_E){
-                currentVector[startIdx+4] = true;
-            }else if(ebp == EvidenceBasedPolicy.POLICY_F) {
-                currentVector[startIdx+5] = true;
-            }else {
-                currentVector[startIdx+6] = true;
+    private byte[] setEBPVector(byte[] currentVector, EvidenceBasedPolicy[] ebpArr, int startIdx) {
+        if(ebpArr != null) {
+            for (EvidenceBasedPolicy ebp : ebpArr) {
+                currentVector[startIdx + ebp.getIndex()] = 1;
             }
         }
+        return currentVector;
+    }
+
+    /**
+     * Updates the article vector with the methods of collection assigned to the article
+     * @param currentVector The current state of the vector
+     * @param mocArr The methods of collection assigned to the article
+     * @param startIdx The start index of the location of the Method of Collection data in the vector
+     * @return An updated byte[] vector
+     */
+    private byte[] setMOCVector(byte[] currentVector, MethodOfCollection[] mocArr, int startIdx){
+        if(mocArr != null) {
+            for (MethodOfCollection moc : mocArr) {
+                currentVector[startIdx + moc.getIndex()] = 1;
+            }
+        }
+        return currentVector;
+    }
+
+    /**
+     * Updates the article vector with the methods of analysis assigned to the article
+     * @param currentVector The current state of the vector
+     * @param moaArr The methods of analysis assigned to the article
+     * @param startIdx The start index of the location of the Methods of Analysis data in the vector
+     * @return An updated byte[] vector
+     */
+    private byte[] setMOAVector(byte[] currentVector, MethodOfAnalysis[] moaArr, int startIdx){
+        if(moaArr != null) {
+            for (MethodOfAnalysis moa : moaArr) {
+                currentVector[startIdx + moa.getIndex()] = 1;
+            }
+        }
+
+        return currentVector;
+    }
+
+    /**
+     * Updates the article data with the Indusrries assigned to the article
+     * @param currentVector The current state of the vector
+     * @param industryArr The industries assigned to the article
+     * @param startIdx The start index of the location of the Industry data in the vector
+     * @return An updated byte[] vector
+     */
+    private byte[] setIndustryVector(byte[] currentVector, Industry[] industryArr, int startIdx) {
+        if(industryArr != null) {
+            for(Industry industry : industryArr) {
+                currentVector[startIdx+industry.getIndex()] = 1;
+            }
+        }
+
         return currentVector;
     }
 }

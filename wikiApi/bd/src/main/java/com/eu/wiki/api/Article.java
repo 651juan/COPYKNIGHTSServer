@@ -21,7 +21,7 @@ public class Article {
     private String[] aDiscipline;
     private String aRawContent;
     private Datasets aDatasets;
-    private boolean[] aVector;
+    private byte[] aVector;
     // When true artle only contains title and pageid
     private boolean aShortArticle;
 
@@ -171,14 +171,36 @@ public class Article {
     }
 
     public double getSimilatiry(Article toCompare){
-        return 0.0f;
+        return this.cosineSimilarity(this.aVector, toCompare.aVector);
     }
 
-    public boolean[] getVector() {
+    public byte[] getVector() {
         return this.aVector;
     }
 
-    public void setVector(boolean[] vector) {
+    public void setVector(byte[] vector) {
         this.aVector = vector;
+    }
+
+    private double cosineSimilarity(byte[] v1, byte[] v2) {
+        double dotProd = 0;
+        double d1 = 0;
+        double d2 = 0;
+
+        for(int i = 0; i < v1.length; i++) {
+            d1 += Math.pow(v1[i],2);
+            d2 += Math.pow(v2[i],2);
+            dotProd += (v1[i]*v2[i]);
+        }
+
+        d1 = Math.sqrt(d1);
+        d2 = Math.sqrt(d2);
+        double denom = d1*d2;
+
+        if(denom == 0) {
+            return 0;
+        }
+
+        return (dotProd/denom);
     }
 }
