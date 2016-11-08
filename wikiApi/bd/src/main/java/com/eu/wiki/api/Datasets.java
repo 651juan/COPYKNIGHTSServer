@@ -9,9 +9,9 @@ public class Datasets {
     private String dYear;
     private String dType;
     private String[] dDataSources;
-    private String[] dMethodsOfCollection;
-    private String[] dMethodsOfAnalysis;
-    private String[] dIndustry;
+    private MethodOfCollection[] dMethodsOfCollection;
+    private MethodOfAnalysis[] dMethodsOfAnalysis;
+    private Industry[] dIndustry;
     private String[] dCountries;
     private String dCrossCountry;
     private String dComparative;
@@ -65,11 +65,11 @@ public class Datasets {
         this.dDatasets = datasets;
     }
 
-    public String[] getMethodOfCollection() {
+    public MethodOfCollection[] getMethodOfCollection() {
         return dMethodsOfCollection;
     }
 
-    public void setMethodOfCollection(String[] methodsOfCollection) {
+    public void setMethodOfCollection(MethodOfCollection[] methodsOfCollection) {
         this.dMethodsOfCollection = methodsOfCollection;
     }
 
@@ -81,19 +81,19 @@ public class Datasets {
         this.dDataSources = dataSources;
     }
 
-    public String[] getMethodOfAnalysis() {
-        return dMethodsOfAnalysis;
+    public MethodOfAnalysis[] getMethodOfAnalysis() {
+        return this.dMethodsOfAnalysis;
     }
 
-    public void setMethodOfAnalysis(String[] methodsOfAnalysis) {
+    public void setMethodOfAnalysis(MethodOfAnalysis[] methodsOfAnalysis) {
         this.dMethodsOfAnalysis = methodsOfAnalysis;
     }
 
-    public String[] getIndustry() {
+    public Industry[] getIndustry() {
         return dIndustry;
     }
 
-    public void setIndustry(String[] industry) {
+    public void setIndustry(Industry[] industry) {
         this.dIndustry = industry;
     }
 

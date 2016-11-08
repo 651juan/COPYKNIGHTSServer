@@ -153,6 +153,9 @@ public class ArticleParser {
 
         this.pRawData = shortArticle.getRawContent();
 
+        boolean[] tmpVector = new boolean[34];
+        Arrays.fill(tmpVector, false);
+
         //Start parsing
         shortArticle.setYear(this.getData(TokenType.TOK_YEAR));
         shortArticle.setTitle(this.getData(TokenType.TOK_TITLE));
@@ -161,9 +164,14 @@ public class ArticleParser {
         shortArticle.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
         shortArticle.setLinks(this.getLinks());
         shortArticle.setRefences(this.getReferences());
-        shortArticle.setFundamentalIssues(this.getFundamentalIssues());
-        shortArticle.setEvidenceBasedPolicies(this.getEvidenceBasedPolicies());
+        FundamentalIssue[] tmpFI = this.getFundamentalIssues();
+        shortArticle.setFundamentalIssues(tmpFI);
+        EvidenceBasedPolicy[] tmpEVP = this.getEvidenceBasedPolicies();
+        shortArticle.setEvidenceBasedPolicies(tmpEVP);
         shortArticle.setDiscipline(this.splitData(this.getData(TokenType.TOK_DISCIPLINE), ","));
+
+        tmpVector = this.setFIVector(tmpVector, tmpFI, 0);
+        tmpVector = this.setEBPVector(tmpVector, tmpEVP, 6);
 
         //Start parsing datasets
         if (this.checkDataset()) {
@@ -173,9 +181,9 @@ public class ArticleParser {
             String dataType = this.getData(TokenType.TOK_DAT_TYPE);
             myDatasets = new Datasets(dataDescription, dataYear, dataType);
             myDatasets.setDataSources(this.splitData(this.getData(TokenType.TOK_DAT_SOURCES), ";"));
-            myDatasets.setMethodOfCollection(this.splitData(this.getData(TokenType.TOK_DAT_MOC), ","));
-            myDatasets.setMethodOfAnalysis(this.splitData(this.getData(TokenType.TOK_DAT_MOA), ","));
-            myDatasets.setIndustry(this.splitData(this.getData(TokenType.TOK_DAT_INDUSTRY), ";"));
+            myDatasets.setMethodOfCollection(this.getMOC(this.splitData(this.getData(TokenType.TOK_DAT_MOC), ",")));
+            myDatasets.setMethodOfAnalysis(this.getMOA(this.splitData(this.getData(TokenType.TOK_DAT_MOA), ",")));
+            myDatasets.setIndustry(this.getIndustries(this.splitData(this.getData(TokenType.TOK_DAT_INDUSTRY), ";")));
             myDatasets.setCountry(this.splitData(this.getData(TokenType.TOK_DAT_COUNTRY), ";"));
             myDatasets.setCrossCountry(this.getData(TokenType.TOK_DAT_CROSS_COUNTRY));
             myDatasets.setComparative(this.getData(TokenType.TOK_DAT_COMPARATIVE));
@@ -216,7 +224,7 @@ public class ArticleParser {
         String[] splitAuthors = rawAuthors.split(";");
 
         for(String author:splitAuthors){
-            if(author.contains(" and ")) {
+            if(author.contains(" and ") && splitAuthors.length > 1) {
                 String[] furtherSplit = author.split(" and ");
                 for(String subauthor:furtherSplit) {
                     tmpResult.add(subauthor.trim());
@@ -269,6 +277,94 @@ public class ArticleParser {
         }
 
         return tmpResult.toArray(new URL[tmpResult.size()]);
+    }
+
+    /**
+     * Returns an array of type MethodOfCollection of all the Medthods of collection the article belongs to
+     * @return A MethodOfCollection array of Methods of collection
+     */
+    private MethodOfCollection[] getMOC(String[] moc) {
+        //TODO add sub methods of collection?
+        //MethodOfCollection[] result = new MethodOfCollection[moc.length];
+        MethodOfCollection[] result = new MethodOfCollection[1];
+
+        if(Arrays.asList(moc).contains("Quantitative Collection Methods")){
+            result[0] = MethodOfCollection.MOC_1;
+        }else if(Arrays.asList(moc).contains("Qualitative Collection Methods")) {
+            result[0] = MethodOfCollection.MOC_2;
+        }else {
+            result[0] = MethodOfCollection.UNKNOWN_MOC;
+        }
+        return result;
+    }
+
+    /**
+     * Returns an array of type MethodOfAnalysis of all the Methods of analysis the article belongs to
+     * @return A MethodOfAnalysis array of Industries
+     */
+    private MethodOfAnalysis[] getMOA(String[] moa) {
+        //TODO add sub methods of analysis?
+        //MethodOfAnalysis[] result = new MethodOfAnalysis[moa.length];
+        MethodOfAnalysis[] result = new MethodOfAnalysis[1];
+
+        if(Arrays.asList(moa).contains("Quantitative Analysis Methods")){
+            result[0] = MethodOfAnalysis.MOA_1;
+        }else if(Arrays.asList(moa).contains("Qualitative Collection Methods")) {
+            result[0] = MethodOfAnalysis.MOA_2;
+        }else {
+            result[0] = MethodOfAnalysis.UNKNOWN_MOA;
+        }
+        return result;
+    }
+
+    /**
+     * Returns an array of type Industry of all the Industries the article belongs to
+     * @return An Industry array of Industries
+     */
+    private Industry[] getIndustries(String[] industries) {
+        Industry[] result = new Industry[industries.length];
+
+        for(int i = 0; i < industries.length; i++) {
+            String tmpVal = industries[i];
+
+            if(Industry.INDUSTRY_1.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_1;
+            }else if(Industry.INDUSTRY_2.equals(tmpVal)) {
+                result[i] = Industry.INDUSTRY_2;
+            }else if(Industry.INDUSTRY_3.equals(tmpVal)) {
+                result[i] = Industry.INDUSTRY_3;
+            }else if(Industry.INDUSTRY_4.equals(tmpVal)) {
+                result[i] = Industry.INDUSTRY_4;
+            }else if(Industry.INDUSTRY_5.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_5;
+            }else if(Industry.INDUSTRY_6.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_6;
+            }else if(Industry.INDUSTRY_7.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_7;
+            }else if(Industry.INDUSTRY_8.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_8;
+            }else if(Industry.INDUSTRY_9.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_9;
+            }else if(Industry.INDUSTRY_10.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_10;
+            }else if(Industry.INDUSTRY_11.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_11;
+            }else if(Industry.INDUSTRY_12.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_12;
+            }else if(Industry.INDUSTRY_13.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_13;
+            }else if(Industry.INDUSTRY_14.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_14;
+            }else if(Industry.INDUSTRY_15.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_15;
+            }else if(Industry.INDUSTRY_16.equals(tmpVal)){
+                result[i] = Industry.INDUSTRY_16;
+            }else{
+                result[i] = Industry.UNKNOWN_INDUSTRY;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -451,5 +547,60 @@ public class ArticleParser {
         }
 
         return false;
+    }
+
+    /**
+     * Updates the Article vector with the provided Fundamental Issues
+     * @param currentVector The current state of the vector
+     * @param fiArr The Fundamental Issues assigned to the current article
+     * @param startIdx The start index of where the Fundamental Issues is located in the vector
+     * @return An updated boolean[] vector
+     */
+    private boolean[] setFIVector(boolean[] currentVector, FundamentalIssue[] fiArr, int startIdx) {
+        for(FundamentalIssue fi : fiArr) {
+            if(fi == FundamentalIssue.ISSUE_1){
+                currentVector[startIdx] = true;
+            }else if(fi == FundamentalIssue.ISSUE_2) {
+                currentVector[startIdx+1] = true;
+            }else if(fi ==FundamentalIssue.ISSUE_3) {
+                currentVector[startIdx+2] = true;
+            }else if(fi == FundamentalIssue.ISSUE_4) {
+                currentVector[startIdx+3] = true;
+            }else if(fi == FundamentalIssue.ISSUE_5){
+                currentVector[startIdx+4] = true;
+            }else{
+                currentVector[startIdx+5] = true;
+            }
+        }
+
+        return currentVector;
+    }
+
+    /**
+     * Updates the Article Vector with the provided Evidence Policies
+     * @param currentVector The current state of the vector
+     * @param ebpArr The Evidence Policies assigned to the current article
+     * @param startIdx The start index of where the Evidence Based Policies is located in the vector
+     * @return An updated boolean[] vector
+     */
+    private boolean[] setEBPVector(boolean[] currentVector, EvidenceBasedPolicy[] ebpArr, int startIdx) {
+        for(EvidenceBasedPolicy ebp : ebpArr) {
+            if(ebp == EvidenceBasedPolicy.POLICY_A){
+                currentVector[startIdx] = true;
+            }else if(ebp == EvidenceBasedPolicy.POLICY_B) {
+                currentVector[startIdx+1] = true;
+            }else if(ebp == EvidenceBasedPolicy.POLICY_C) {
+                currentVector[startIdx+2] = true;
+            }else if(ebp == EvidenceBasedPolicy.POLICY_D){
+                currentVector[startIdx+3] = true;
+            }else if(ebp == EvidenceBasedPolicy.POLICY_E){
+                currentVector[startIdx+4] = true;
+            }else if(ebp == EvidenceBasedPolicy.POLICY_F) {
+                currentVector[startIdx+5] = true;
+            }else {
+                currentVector[startIdx+6] = true;
+            }
+        }
+        return currentVector;
     }
 }

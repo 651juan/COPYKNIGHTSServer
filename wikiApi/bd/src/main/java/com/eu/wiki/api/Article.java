@@ -1,6 +1,7 @@
 package com.eu.wiki.api;
 
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Created by Juan on 29/09/2016.
@@ -20,6 +21,7 @@ public class Article {
     private String[] aDiscipline;
     private String aRawContent;
     private Datasets aDatasets;
+    private boolean[] aVector;
     // When true artle only contains title and pageid
     private boolean aShortArticle;
 
@@ -166,5 +168,17 @@ public class Article {
 
     public void setDiscipline(String[] discipline) {
         this.aDiscipline = discipline;
+    }
+
+    public double getSimilatiry(Article toCompare){
+        return 0.0f;
+    }
+
+    public boolean[] getVector() {
+        return this.aVector;
+    }
+
+    public void setVector(boolean[] vector) {
+        this.aVector = vector;
     }
 }

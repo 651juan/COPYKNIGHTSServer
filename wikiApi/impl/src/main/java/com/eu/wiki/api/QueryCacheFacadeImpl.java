@@ -104,9 +104,9 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
 
         for(Article article : output.getArticles()) {
             if (article.getDatasets() != null) {
-                String[] tmpIndustry = article.getDatasets().getIndustry();
-                for (String industry : tmpIndustry) {
-                    incrementCountToMap(industryCache, industry);
+                Industry[] tmpIndustry = article.getDatasets().getIndustry();
+                for (Industry industry : tmpIndustry) {
+                    incrementCountToMap(industryCache, industry.getValue());
                 }
             } else {
                 incrementCountToMap(industryCache, "");
