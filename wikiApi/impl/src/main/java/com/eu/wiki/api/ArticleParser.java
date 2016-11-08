@@ -211,7 +211,7 @@ public class ArticleParser {
         shortArticle.setVector(tmpVector);
         //Remove raw data
         shortArticle.setRawContent("");
-        
+
         return shortArticle;
     }
 

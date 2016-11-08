@@ -15,7 +15,7 @@ public class Article {
     private String aCitation;
     private String aAbstract;
     private URL[] aLinks;
-    private Reference[] aRefences;
+    private Reference[] aReferences;
     private FundamentalIssue[] aFundamentalIssues;
     private EvidenceBasedPolicy[] aEvidenceBasedPolicies;
     private String[] aDiscipline;
