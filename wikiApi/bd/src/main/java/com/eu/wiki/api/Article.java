@@ -15,7 +15,7 @@ public class Article {
     private String aCitation;
     private String aAbstract;
     private URL[] aLinks;
-    private Reference[] aReferences;
+    private String[] aReferences;
     private FundamentalIssue[] aFundamentalIssues;
     private EvidenceBasedPolicy[] aEvidenceBasedPolicies;
     private String[] aDiscipline;
@@ -114,12 +114,12 @@ public class Article {
         this.aLinks = links;
     }
 
-    public Reference[] getRefences() {
-        return aRefences;
+    public String[] getReferences() {
+        return this.aReferences;
     }
 
-    public void setRefences(Reference[] refences) {
-        this.aRefences = refences;
+    public void setReferences(String[] refences) {
+        this.aReferences = refences;
     }
 
     public String getRawContent() {

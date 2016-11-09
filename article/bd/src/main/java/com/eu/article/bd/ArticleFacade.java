@@ -2,6 +2,7 @@ package com.eu.article.bd;
 import java.util.List;
 import java.util.Map;
 
+import com.eu.wiki.api.Article;
 import com.eu.wiki.api.ArticleList;
 
 /**
@@ -86,4 +87,19 @@ public interface ArticleFacade {
      */
     Map<String, Integer> getArticleFundamentalIssueCount();
 
-}
+    /**
+     * Returns all the similar articles to the article with the provided id
+     * @param pageID The page id of the article to find similar articles to
+     * @param threshold threshold The similarity threshold
+     * @return a {@link ArticleList}
+     */
+    ArticleList getSimilarArticles(int pageID, double threshold);
+
+    /**
+     * Returns all the similar articles to the provided articles
+     * @param toComapre The article to find similar articles to
+     * @param threshold The similarity threshold
+     * @return a {@link ArticleList}
+     */
+    ArticleList getSimilarArticles(Article toComapre, double threshold);
+    }

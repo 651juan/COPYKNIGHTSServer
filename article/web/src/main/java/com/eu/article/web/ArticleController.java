@@ -22,6 +22,12 @@ public class ArticleController {
     private static final LocalDateTime expiry = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.now());
     private ArticleFacade facade;
 
+    @RequestMapping(value = "/similar/{similarPageId}", method=RequestMethod.GET)
+    public ArticleList getSimilarity(@PathVariable("similarPageId") int pageID) {
+        initialiseFacade();
+        return facade.getSimilarArticles(pageID,0.75);
+    }
+
     @RequestMapping(value = "/fundamental")
     public Map<String, Integer> getFundamentalIssueCount() {
         initialiseFacade();

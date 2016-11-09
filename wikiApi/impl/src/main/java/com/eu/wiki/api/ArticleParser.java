@@ -164,7 +164,7 @@ public class ArticleParser {
         shortArticle.setCitation(this.getData(TokenType.TOK_CITATION));
         shortArticle.setAbstract(this.getData(TokenType.TOK_ABSTRACT));
         shortArticle.setLinks(this.getLinks());
-        shortArticle.setRefences(this.getReferences());
+        shortArticle.setReferences(this.splitData(this.getData(TokenType.TOK_REFERENCES), ";"));
         FundamentalIssue[] tmpFI = this.getFundamentalIssues();
         shortArticle.setFundamentalIssues(tmpFI);
         EvidenceBasedPolicy[] tmpEVP = this.getEvidenceBasedPolicies();
@@ -250,22 +250,6 @@ public class ArticleParser {
         }
 
         return tmpResult.toArray(new String[tmpResult.size()]);
-    }
-
-    /**
-     * Returns the references of the Article as an Array of Reference objects
-     * @return an array of References
-     */
-    private Reference[] getReferences() {
-        List<Reference> tmpResult = new ArrayList<>();
-        String rawReferences = this.getData(TokenType.TOK_REFERENCES);
-        String[] splitReferences = rawReferences.split(";");
-
-        for(String reference:splitReferences) {
-            tmpResult.add(new Reference(reference, null));
-        }
-
-        return tmpResult.toArray(new Reference[tmpResult.size()]);
     }
 
     /**

@@ -28,7 +28,7 @@ public class ArticleFacadeImpl implements ArticleFacade {
         Query q = new Query();
         String decoded = null;
         try {
-             decoded = URLDecoder.decode(articleTitles, StandardCharsets.UTF_8.name());
+            decoded = URLDecoder.decode(articleTitles, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -69,16 +69,16 @@ public class ArticleFacadeImpl implements ArticleFacade {
         List<Article> allArticles =  this.getAllArticles().getArticles();
         List<Article> result = allArticles.stream().filter(article ->
         {
-          if (article.getDatasets() != null) {
-              if (industry.equals( "null")) {
-                  return Arrays.asList(article.getDatasets().getIndustry()).contains("");
-              } else{
-                  return Arrays.asList(article.getDatasets().getIndustry()).contains(industry);
-              }
-          } else {
-              if (industry.equals("null")) return true;
-          }
-          return false;
+            if (article.getDatasets() != null) {
+                if (industry.equals( "null")) {
+                    return Arrays.asList(article.getDatasets().getIndustry()).contains("");
+                } else{
+                    return Arrays.asList(article.getDatasets().getIndustry()).contains(industry);
+                }
+            } else {
+                if (industry.equals("null")) return true;
+            }
+            return false;
         }).collect(Collectors.toList());
 
         return new ArticleList(result);
@@ -121,5 +121,36 @@ public class ArticleFacadeImpl implements ArticleFacade {
     @Override
     public Map<String, Integer> getArticleFundamentalIssueCount() {
         return facade.getFundamentalIssueCount();
+    }
+
+    @Override
+    public ArticleList getSimilarArticles(int pageID, double threshold) {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        Article toCompare = null;
+
+        //Get the article to compare with the provided pageID
+        for(Article article : allArticles) {
+            if(article.getPageid() == pageID) {
+                toCompare = article;
+                break;
+            }
+        }
+
+        return this.getSimilarArticles(toCompare, threshold);
+    }
+
+    @Override
+    public ArticleList getSimilarArticles(Article toComapre, double threshold) {
+        List<Article> tmpResult = new ArrayList<>();
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+
+        for(Article article : allArticles) {
+            double similarity = toComapre.getSimilatiry(article);
+            if(similarity >= threshold){
+                tmpResult.add(article);
+            }
+        }
+
+        return new ArticleList(tmpResult);
     }
 }
