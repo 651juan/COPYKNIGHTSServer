@@ -49,4 +49,20 @@ interface QueryCacheFacade {
      */
     Map<String, Integer> getFundamentalIssueCount();
 
+    /**
+     * Returns a {@link Map} Containing the {@link EvidenceBasedPolicy} as a key and the count
+     * of the articles that are related to that evidence based policy. If the cache is not expired
+     * it returns the cache else it will refresh the cache before.
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getEvidenceBasedPolicyCount();
+
+    /**
+     * Returns a {@link Map} Containing the Country as a key and the count
+     * of the articles that are related to that country. If the cache is not expired
+     * it returns the cache else it will refresh the cache before.
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getCountryCount();
+
 }

@@ -15,6 +15,8 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
     private HashMap<String, Integer> authorCache;
     private HashMap<String, Integer> industryCache;
     private HashMap<String, Integer> fundamentalCache;
+    private HashMap<String, Integer> evidenceCache;
+    private HashMap<String, Integer> countryCache;
     private LocalDateTime  lastUpdated;
     private LocalDateTime expiryPeriod;
     private QueryFacade queryFacade;
@@ -28,6 +30,8 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
         this.authorCache = new HashMap<>();
         this.industryCache = new HashMap<>();
         this.fundamentalCache = new HashMap<>();
+        this.evidenceCache = new HashMap<>();
+        this.countryCache = new HashMap<>();
         initialiseCache();
     }
 
@@ -124,6 +128,27 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
                 }
             }
         }
+
+        for (Article article : output.getArticles()) {
+            for (EvidenceBasedPolicy evi : article.getEvidenceBasedPolicies()) {
+                if (evi == null) {
+                    incrementCountToMap(evidenceCache, "");
+                } else {
+                    incrementCountToMap(evidenceCache, evi.toString());
+                }
+            }
+        }
+
+        for (Article article : output.getArticles()) {
+            if (article.getDatasets() != null) {
+                String[] tmpCountry = article.getDatasets().getCountries();
+                for (String country: tmpCountry) {
+                    incrementCountToMap(countryCache, country);
+                }
+            } else {
+                incrementCountToMap(countryCache, "");
+            }
+        }
      }
 
     private void incrementCountToMap(Map<String, Integer> map, String tmpValue) {
@@ -197,5 +222,20 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
         return fundamentalCache;
     }
 
+    @Override
+    public Map<String, Integer> getEvidenceBasedPolicyCount() {
+        if (checkExpiry())  {
+            initialiseCache();
+        }
+        return evidenceCache;
+    }
+
+    @Override
+    public Map<String, Integer> getCountryCount() {
+        if (checkExpiry())  {
+            initialiseCache();
+        }
+        return countryCache;
+    }
 
 }

@@ -38,9 +38,9 @@ public interface ArticleFacade {
     ArticleList getArticlesInYear(int year);
 
     /**
-     * Returns an {@link ArticleList} containing all the articles published in an industry
+     * Returns an {@link ArticleList} containing all the articles with a dataset published in an industry
      * @param industry the industry to query
-     * @return An {@link ArticleList} containing all the articles published in an industry
+     * @return An {@link ArticleList} containing all the articles with a dataset published in an industry
      */
     ArticleList getArticlesInIndustry(String industry);
 
@@ -50,6 +50,20 @@ public interface ArticleFacade {
      * @return An {@link ArticleList} containing all the articles published in an fundamental issue
      */
     ArticleList getArticlesInFundamental(String fundamental);
+
+    /**
+     * Returns an {@link ArticleList} containing all the articles published that are using the {@link com.eu.wiki.api.EvidenceBasedPolicy}.
+     * @param evidence The Evidence Based Policy
+     * @return An {@link ArticleList} containing all the articles published using the Evidence based policy.
+     */
+    ArticleList getArticlesByEvidenceBasedPolicy(String evidence);
+
+    /**
+     * Returns an {@link ArticleList} containing all the articles published using a dataset from the country.
+     * @param country the country
+     * @return An {@link ArticleList} containing all the articles published using the country.
+     */
+    ArticleList getArticlesByCountry(String country);
 
 
     /**
@@ -68,21 +82,21 @@ public interface ArticleFacade {
 
     /**
      * Returns a @{@link Map} Containing the author as a key and the count
-     * of the articles that where published by that author as values
+     * of the articles that where published by that Author as values
      * @return a @{@link Map}
      */
     Map<String, Integer> getArticleAuthorCount();
 
     /**
-     * Returns @{@link Map} Containing the Industry as a key and the count of
-     * the articles of that industry.
+     * Returns @{@link Map} Containing the {@link com.eu.wiki.api.Industry} as a key and the count of
+     * the articles of that {@link com.eu.wiki.api.Industry}.
      * @return a @{@link Map}
      */
     Map<String, Integer> getArticleIndustryCount();
 
     /**
-     * Returns @{@link Map} Containing the Fundamental Issue as a key and the count of
-     * the articles of that Fundamental Issue.
+     * Returns @{@link Map} Containing the {@link com.eu.wiki.api.FundamentalIssue} as a key and the count of
+     * the articles of that {@link com.eu.wiki.api.FundamentalIssue}.
      * @return a @{@link Map}
      */
     Map<String, Integer> getArticleFundamentalIssueCount();
@@ -102,4 +116,18 @@ public interface ArticleFacade {
      * @return a {@link ArticleList}
      */
     ArticleList getSimilarArticles(Article toComapre, double threshold);
-    }
+    /**
+     * Return a @{@link Map} Containing the {@link com.eu.wiki.api.EvidenceBasedPolicy} as a key and the count of the
+     * articles of that {@link com.eu.wiki.api.EvidenceBasedPolicy}
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getArticleEvidenceBasedPolicyCount();
+
+    /**
+     * Return a @{@link Map} Containing the Country as a key and the count of the
+     * articles of that Country
+     * @return a @{@link Map}
+     */
+    Map<String, Integer> getArticleCountryCount();
+
+}

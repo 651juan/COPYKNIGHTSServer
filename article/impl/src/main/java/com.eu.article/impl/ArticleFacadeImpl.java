@@ -95,6 +95,35 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     @Override
+    public ArticleList getArticlesByEvidenceBasedPolicy(String evidence) {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        List<Article> result = allArticles.stream().filter(article -> Arrays.asList(article.getEvidenceBasedPolicies())
+                .contains(EvidenceBasedPolicy.valueOf(evidence)))
+                .collect(Collectors.toList());
+        return new ArticleList(result);
+    }
+
+    @Override
+    public ArticleList getArticlesByCountry(String country) {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        List<Article> result = allArticles.stream().filter(article ->
+        {
+            if (article.getDatasets() != null) {
+                if (country.equals( "null")) {
+                    return Arrays.asList(article.getDatasets().getCountries()).contains("");
+                } else{
+                    return Arrays.asList(article.getDatasets().getCountries()).contains(country);
+                }
+            } else {
+                if (country.equals("null")) return true;
+            }
+            return false;
+        }).collect(Collectors.toList());
+
+        return new ArticleList(result);
+    }
+
+    @Override
     public Map<String, Integer> getArticleYearCount() {
         return facade.getYearCount();
     }
@@ -152,5 +181,15 @@ public class ArticleFacadeImpl implements ArticleFacade {
         }
 
         return new ArticleList(tmpResult);
+    }
+
+    @Override
+    public Map<String, Integer> getArticleEvidenceBasedPolicyCount() {
+        return facade.getEvidenceBasedPolicyCount();
+    }
+
+    @Override
+    public Map<String, Integer> getArticleCountryCount() {
+        return facade.getCountryCount();
     }
 }
