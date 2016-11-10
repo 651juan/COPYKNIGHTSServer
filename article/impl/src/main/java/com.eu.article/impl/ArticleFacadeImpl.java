@@ -174,9 +174,11 @@ public class ArticleFacadeImpl implements ArticleFacade {
         List<Article> allArticles =  this.getAllArticles().getArticles();
 
         for(Article article : allArticles) {
-            double similarity = toComapre.getSimilatiry(article);
-            if(similarity >= threshold){
-                tmpResult.add(article);
+            if(!article.equals(toComapre)) {
+                double similarity = toComapre.getSimilatiry(article);
+                if (similarity >= threshold) {
+                    tmpResult.add(article);
+                }
             }
         }
 
