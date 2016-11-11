@@ -11,15 +11,15 @@ import com.eu.wiki.api.ArticleList;
  */
 public interface ArticleFacade {
     /**
-     * Gets a @{@link List} of @{@link com.eu.wiki.api.Article} incl. description, by searching the titles.
-     * @param articleTitles @{@link List} of page titles as a comma separated @{@link String}
+     * Gets a {@link List} of {@link com.eu.wiki.api.Article} incl. description, by searching the titles.
+     * @param articleTitles {@link List} of page titles as a comma separated {@link String}
      * @return {@link ArticleList} of matching data.
      */
     ArticleList getArticlesByTitle(String articleTitles);
 
     /**
-     * Gets a @{@link List} of short @{@link com.eu.wiki.api.Article} not including description. by searching for ids.
-     * @param articleIds @{@link List} of page ids as a comma separated @{@link String}
+     * Gets a {@link List} of short {@link com.eu.wiki.api.Article} not including description. by searching for ids.
+     * @param articleIds {@link List} of page ids as a comma separated {@link String}
      * @return {@link ArticleList} of matching data.
      */
     ArticleList getArticlesById(String articleIds);
@@ -67,9 +67,9 @@ public interface ArticleFacade {
 
 
     /**
-     * Returns a @{@link Map} Containing the year as a key and the count
+     * Returns a {@link Map} Containing the year as a key and the count
      * of the articles that where published in that year in as values
-     * @return a @{@link Map}
+     * @return a {@link Map}
      */
     Map<String, Integer> getArticleYearCount();
 
@@ -81,23 +81,23 @@ public interface ArticleFacade {
     ArticleList getArticlesByAuthor(String author);
 
     /**
-     * Returns a @{@link Map} Containing the author as a key and the count
+     * Returns a {@link Map} Containing the author as a key and the count
      * of the articles that where published by that Author as values
-     * @return a @{@link Map}
+     * @return a {@link Map}
      */
     Map<String, Integer> getArticleAuthorCount();
 
     /**
-     * Returns @{@link Map} Containing the {@link com.eu.wiki.api.Industry} as a key and the count of
+     * Returns {@link Map} Containing the {@link com.eu.wiki.api.Industry} as a key and the count of
      * the articles of that {@link com.eu.wiki.api.Industry}.
-     * @return a @{@link Map}
+     * @return a {@link Map}
      */
     Map<String, Integer> getArticleIndustryCount();
 
     /**
-     * Returns @{@link Map} Containing the {@link com.eu.wiki.api.FundamentalIssue} as a key and the count of
+     * Returns {@link Map} Containing the {@link com.eu.wiki.api.FundamentalIssue} as a key and the count of
      * the articles of that {@link com.eu.wiki.api.FundamentalIssue}.
-     * @return a @{@link Map}
+     * @return a {@link Map}
      */
     Map<String, Integer> getArticleFundamentalIssueCount();
 
@@ -117,16 +117,16 @@ public interface ArticleFacade {
      */
     ArticleList getSimilarArticles(Article toComapre, double threshold);
     /**
-     * Return a @{@link Map} Containing the {@link com.eu.wiki.api.EvidenceBasedPolicy} as a key and the count of the
+     * Return a {@link Map} Containing the {@link com.eu.wiki.api.EvidenceBasedPolicy} as a key and the count of the
      * articles of that {@link com.eu.wiki.api.EvidenceBasedPolicy}
-     * @return a @{@link Map}
+     * @return a {@link Map}
      */
     Map<String, Integer> getArticleEvidenceBasedPolicyCount();
 
     /**
-     * Return a @{@link Map} Containing the Country as a key and the count of the
+     * Return a {@link Map} Containing the Country as a key and the count of the
      * articles of that Country
-     * @return a @{@link Map}
+     * @return a {@link Map}
      */
     Map<String, Integer> getArticleCountryCount();
 
