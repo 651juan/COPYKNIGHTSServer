@@ -30,6 +30,11 @@
 <p>We have dedicated a whole page for the API below &amp; we have also provided Javadoc in the '/docs' folder for more information regarding the process. THE API's are designed to follow mostly the REST API Ideology.</p>
 
 <h3>
+<a id="get-all-articles" class="anchor" href="#get-all-articles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get All Articles</h3>
+
+<p>This API uses the path '/articles'.</p>
+
+<h3>
 <a id="get-articles-by-page-ids" class="anchor" href="#get-articles-by-page-ids" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Articles By Page ID's</h3>
 
 <p>This API uses the path '/article' with an attribute of 'pageids'.
@@ -71,6 +76,48 @@ The ':issue' variable is a string of the key of the FundamentalIssue ENUM which 
 <p>This API uses the path '/evidence/:policy' with the path variable ':policy'.
 The ':policy' variable is a string of the key of the EvidenceBasedPolicy ENUM which is described below. Eg. '/evidence/Policy_A'</p>
 
+<h3>
+<a id="get-articles-by-industry" class="anchor" href="#get-articles-by-industry" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Articles by Industry</h3>
+
+<p>This API uses the path '/industry/:industry' with the path variable ':industry'.
+The ':industry' variable is a string of the key of the Industry ENUM which is described below. Eg. '/industry/INDUSTRY_12'</p>
+
+<h3>
+<a id="get-author-count" class="anchor" href="#get-author-count" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Author Count</h3>
+
+<p>This API uses the path '/author'. It will return a list of authors followed by their respective count.</p>
+
+<h3>
+<a id="get-country-count" class="anchor" href="#get-country-count" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Country Count</h3>
+
+<p>This API uses the path '/country'. It will return a list of countries followed by their respective count.</p>
+
+<h3>
+<a id="get-year-count" class="anchor" href="#get-year-count" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Year Count</h3>
+
+<p>This API uses the path '/year'. It will return a list of years followed by their respective count.</p>
+
+<h3>
+<a id="get-fundamental-issue-count" class="anchor" href="#get-fundamental-issue-count" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Fundamental Issue Count</h3>
+
+<p>This API uses the path '/fundamental'. It will return a list of FundamentalIssue ENUM Keys followed by their respective count.</p>
+
+<h3>
+<a id="get-evidence-based-policy-count" class="anchor" href="#get-evidence-based-policy-count" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Evidence Based Policy Count</h3>
+
+<p>This API uses the path '/evidence'. It will return a list of EvidenceBasedPolicy ENUM Keys followed by their respective count.</p>
+
+<h3>
+<a id="get-industry-count" class="anchor" href="#get-industry-count" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Industry Count</h3>
+
+<p>This API uses the path '/industry'. It will return a list of Industry ENUM Keys followed by their respective count.</p>
+
+<h3>
+<a id="get-similar-articles" class="anchor" href="#get-similar-articles" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Get Similar Articles</h3>
+
+<p>This API uses the path '/similar/:similar' with the path variable ':similar'.
+The ':similar' variable is the pageid of the article which you would like to get similar articles of. Eg. '/similar/1305'</p>
+
 <h2>
 <a id="enums" class="anchor" href="#enums" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ENUMS</h2>
 
@@ -95,6 +142,28 @@ POLICY_D("D. Licensing and Business models (collecting societies; meta data; exc
 POLICY_E("E. Fair remuneration (levies; copyright contracts)",4),
 POLICY_F("F. Enforcement (quantifying infringement; criminal sanctions; intermediary liability; graduated response; litigation and court data; commercial/non-commercial distinction; education and awareness)",5),
 UNKNOWN_POLICY("UNKNOWN",5);
+</code></pre>
+
+<h3>
+<a id="industry" class="anchor" href="#industry" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Industry</h3>
+
+<pre><code>INDUSTRY_1("Advertising",0),
+INDUSTRY_2("Architectural",1),
+INDUSTRY_3("Computer consultancy",2),
+INDUSTRY_4("Computer programming",3),
+INDUSTRY_5("Creative, arts and entertainment",4),
+INDUSTRY_6("Cultural education",5),
+INDUSTRY_7("Film and motion pictures",6),
+INDUSTRY_8("PR and communication",7),
+INDUSTRY_9("Photographic activities",8),
+INDUSTRY_10("Programming and broadcasting",9),
+INDUSTRY_11("Publishing of books, periodicals and other publishing",10),
+INDUSTRY_12("Software publishing (including video games)",11),
+INDUSTRY_13("Sound recording and music publishing",12),
+INDUSTRY_14("Specialised design",13),
+INDUSTRY_15("Television programmes",14),
+INDUSTRY_16("Translation and interpretation",15),
+UNKNOWN_INDUSTRY("UNKNOWN",16);
 </code></pre>
 
 <h2>
