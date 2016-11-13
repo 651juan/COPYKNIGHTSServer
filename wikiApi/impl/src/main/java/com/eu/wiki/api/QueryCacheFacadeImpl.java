@@ -1,9 +1,13 @@
 package com.eu.wiki.api;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -98,7 +102,21 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
 
         for(Article article : output.getArticles()) {
             String tmpYear = article.getYear();
-            incrementCountToMap(yearCache, tmpYear);
+            List<String> allMatches = new ArrayList<String>();
+            Pattern p = Pattern.compile("[0-9]{4}");
+            Matcher m = p.matcher(tmpYear);
+            while (m.find()) {
+                allMatches.add(m.group());
+            }
+            if (allMatches.size() == 2) {
+                for (int i = Integer.valueOf(allMatches.get(0)); i <= Integer.valueOf(allMatches.get(1)); i++) {
+                    incrementCountToMap(yearCache, String.valueOf(i));
+                }
+            } else if (allMatches.size() == 1) {
+                incrementCountToMap(yearCache, allMatches.get(0));
+            } else {
+                incrementCountToMap(yearCache, tmpYear);
+            }
         }
 
         for(Article article : output.getArticles()) {
