@@ -194,4 +194,67 @@ public class ArticleFacadeImpl implements ArticleFacade {
     public Map<String, Integer> getArticleCountryCount() {
         return facade.getCountryCount();
     }
+
+    @Override
+    public Map<String, Double> getAllArticlesWordCloud() {
+        return this.getWordCloud(this.getAllArticles().getArticles(), true, true);
+    }
+
+    @Override
+    public Map<String,Double> getWordCloud(List<Article> articleList, boolean removeNumbers, boolean removeSymbols){
+        Map<String,Double> result = new HashMap<>();
+        Map<String, Integer> termFreq = new HashMap<>();
+        Map<String, Integer> docFreq = new HashMap<>();
+        int totalWords = 0;
+
+        for(int i = 0; i < articleList.size(); i++) {
+            String aAbstarct = articleList.get(i).getAbstract().toLowerCase();
+            if(removeNumbers) {
+                aAbstarct = aAbstarct.replaceAll("\\d",""); //Replace all digits with empty string
+            }
+
+            if(removeSymbols) {
+                aAbstarct = aAbstarct.replaceAll("[^\\p{L}\\p{Z}]", ""); //Unicode replace all non letters and non digits with empty string
+            }
+            String[] aAbstractWords = aAbstarct.split(" ");
+            String[] unique = new HashSet<String>(Arrays.asList(aAbstractWords)).toArray(new String[0]);
+
+            //Term Frequency
+            for(int j = 0; j < aAbstractWords.length; j++) {
+                if(!aAbstractWords[j].equals("")) {
+                    if (termFreq.containsKey(aAbstractWords[j])) {
+                        Integer tmp = termFreq.get(aAbstractWords[j]);
+                        termFreq.put(aAbstractWords[j], tmp + 1);
+                    } else {
+                        termFreq.put(aAbstractWords[j], 1);
+                    }
+                    totalWords++;
+                }
+            }
+
+            //Document Frequency
+            for(int j = 0; j < unique.length; j++) {
+                if(!unique[j].equals("")) {
+                    if (docFreq.containsKey(unique[j])) {
+                        Integer tmp = docFreq.get(unique[j]);
+                        docFreq.put(unique[j], tmp + 1);
+                    } else {
+                        docFreq.put(unique[j], 1);
+                    }
+                }
+            }
+        }
+
+        for(Map.Entry<String,Integer> entry : termFreq.entrySet()) {
+            String key = entry.getKey();
+            double termF = entry.getValue()/(double)totalWords;
+            double docF = Math.log10((double)articleList.size()/docFreq.get(key));
+
+            double tfidf = termF*docF;
+
+            result.put(key,tfidf);
+        }
+
+        return result;
+    }
 }
