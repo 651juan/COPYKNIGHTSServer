@@ -1,5 +1,5 @@
 # Copy Knights API Server
-The Copy Knights API Server connects to the media wiki APIs and parses the content of the articles. The Copy Knights API Server exposes it's own API to provide easier access to the content of the articles. The API allows for searching and counting by a certain criteria. This will allow any developer to connect to the API to help with better visualizations of the article data. The Server also cache's most information as to improve performance, this can be configured also by the API.
+The Copy Knights API Server connects to the media wiki APIs and parses the content of the articles. The Copy Knights API Server exposes it's own API to provide easier access to the content of the articles. The API allows for searching and counting by a certain criteria. Some features which the API enables is extraction of keywords from the abstract and similarity between articles. This will allow any developer to connect to the API to help with better visualizations of the article data. The server also caches all information in memory and refreshes every predefined time as to improve performance.
 
 ## The API
 We have dedicated a whole page for the API below & we have also provided Javadoc in the '/docs' folder for more information regarding the process. THE API's are designed to follow mostly the REST API Ideology.
