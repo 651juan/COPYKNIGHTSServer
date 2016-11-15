@@ -1,5 +1,7 @@
 package com.eu.wiki.api;
 
+import opennlp.tools.stemmer.PorterStemmer;
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -169,12 +171,16 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
 
         //Generate WordClouds
         //Get IDF
+        PorterStemmer stemmer = new PorterStemmer();
         Map<String, Double> idFreq = new HashMap<>();
         for(Article article : output.getArticles()) {
             String aAbstract = article.getAbstract().toLowerCase();
             aAbstract = aAbstract.replaceAll("\\d",""); //Replace all digits with empty string
             aAbstract = aAbstract.replaceAll("[^\\p{L}\\p{Z}]", ""); //Unicode replace all non letters and non digits with empty string
             String[] aAbstractWords = aAbstract.split(" ");
+            for (int i = 0; i < aAbstractWords.length; i++) {
+                aAbstractWords[i] = stemmer.stem(aAbstractWords[i]);
+            }
             String[] unique = new HashSet<String>(Arrays.asList(aAbstractWords)).toArray(new String[0]);
 
             for(String word : unique) {
@@ -203,6 +209,9 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
             aAbstract = aAbstract.replaceAll("\\d",""); //Replace all digits with empty string
             aAbstract = aAbstract.replaceAll("[^\\p{L}\\p{Z}]", ""); //Unicode replace all non letters and non digits with empty string
             String[] aAbstractWords = aAbstract.split(" ");
+            for (int i = 0; i < aAbstractWords.length; i++) {
+                aAbstractWords[i] = stemmer.stem(aAbstractWords[i]);
+            }
 
             double max = 0;
 
@@ -242,7 +251,20 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
                 tfidf.put(entry.getKey(),entry.getValue()/maxTFIDF);
             }
 
-            article.setWordCloud(tfidf);
+            aAbstract = article.getAbstract().toLowerCase();
+            aAbstract = aAbstract.replaceAll("\\d",""); //Replace all digits with empty string
+            aAbstract = aAbstract.replaceAll("[^\\p{L}\\p{Z}]", ""); //Unicode replace all non letters and non digits with empty string
+            aAbstractWords = aAbstract.split(" ");
+            Map<String,Double> result = new HashMap<>();
+            for (int i = 0; i < aAbstractWords.length; i++) {
+                String temp = stemmer.stem(aAbstractWords[i]);
+                if (tfidf.containsKey(temp)) {
+                    result.put(aAbstractWords[i], tfidf.get(temp));
+                }
+            }
+
+            article.setWordCloud(result);
+            article.setStemmedWordCloud(tfidf);
         }
 
     }

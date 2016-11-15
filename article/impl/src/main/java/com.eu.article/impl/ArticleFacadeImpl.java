@@ -2,6 +2,8 @@ package com.eu.article.impl;
 
 import com.eu.article.bd.ArticleFacade;
 import com.eu.wiki.api.*;
+import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.Stemmer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -139,20 +141,22 @@ public class ArticleFacadeImpl implements ArticleFacade {
 
     @Override
     public ArticleList getArticlesByKeyword(String keyword) {
+        PorterStemmer stemmer = new PorterStemmer();
+        String search = stemmer.stem(keyword);
         List<Article> allArticles =  this.getAllArticles().getArticles();
         List<Article> result = allArticles.stream()
-                .filter(article -> article.getWordCloud().containsKey(keyword))
+                .filter(article -> article.getStemmedWordCloud().containsKey(search))
                 .collect(Collectors.toList());
         Collections.sort(result,new Comparator<Article>()
             {
                 public int compare(Article o1, Article o2) {
-                if (o1.getWordValue(keyword) ==
-                        o2.getWordValue(keyword))
+                if (o1.getWordValue(search) ==
+                        o2.getWordValue(search))
                 {
                     return 0;
                 }
-                else if (o1.getWordValue(keyword) <
-                        o2.getWordValue(keyword))
+                else if (o1.getWordValue(search) <
+                        o2.getWordValue(search))
                 {
                     return 1;
                 }

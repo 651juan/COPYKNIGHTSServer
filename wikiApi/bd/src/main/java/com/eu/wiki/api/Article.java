@@ -24,6 +24,7 @@ public class Article {
     private Datasets aDatasets;
     private byte[] aVector;
     private Map<String, Double> aWordCloud;
+    private Map<String, Double> aStemmedWordCloud;
     // When true artle only contains title and pageid
     private boolean aShortArticle;
 
@@ -215,6 +216,14 @@ public class Article {
     }
 
     public Double getWordValue(String name) {
-        return this.aWordCloud.get(name);
+        return this.aStemmedWordCloud.get(name);
+    }
+
+    public Map<String, Double> getStemmedWordCloud() {
+        return aStemmedWordCloud;
+    }
+
+    public void setStemmedWordCloud(Map<String, Double> aStemmedWordCloud) {
+        this.aStemmedWordCloud = aStemmedWordCloud;
     }
 }
