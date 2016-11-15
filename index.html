@@ -22,7 +22,7 @@
       <h1>
 <a id="copy-knights-api-server" class="anchor" href="#copy-knights-api-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Copy Knights API Server</h1>
 
-<p>The Copy Knights API Server connects to the media wiki APIs and parses the content of the articles. The Copy Knights API Server exposes it's own API to provide easier access to the content of the articles. The API allows for searching and counting by a certain criteria. This will allow any developer to connect to the API to help with better visualizations of the article data. The Server also cache's most information as to improve performance, this can be configured also by the API.</p>
+<p>The Copy Knights API Server connects to the media wiki APIs and parses the content of the articles. The Copy Knights API Server exposes it's own API to provide easier access to the content of the articles. The API allows for searching and counting by a certain criteria. Some features which the API enables is extraction of keywords from the abstract and similarity between articles. This will allow any developer to connect to the API to help with better visualizations of the article data. The server also caches all information in memory and refreshes every predefined time as to improve performance.</p>
 
 <h2>
 <a id="the-api" class="anchor" href="#the-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The API</h2>
@@ -126,29 +126,6 @@ The ':similar' variable is the pageid of the article which you would like to get
 
 <h2>
 <a id="enums" class="anchor" href="#enums" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ENUMS</h2>
-
-<h3>
-<a id="fundamental-issue" class="anchor" href="#fundamental-issue" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fundamental Issue</h3>
-
-<pre><code>ISSUE_1("1. Relationship between protection (subject matter/term/scope) and supply/economic development/growth/welfare",0),
-ISSUE_2("2. Relationship between creative process and protection - what motivates creators (e.g. attribution; control; remuneration; time allocation)?",1),
-ISSUE_3("3. Harmony of interest assumption between authors and publishers (creators and producers/investors)",2),
-ISSUE_4("4. Effects of protection on industry structure (e.g. oligopolies; competition; economics of superstars; business models; technology adoption)",3),
-ISSUE_5("5. Understanding consumption/use (e.g. determinants of unlawful behaviour; user-generated content; social media)",4),
-UNKNOWN_ISSUE("UNKNOWN",5);
-</code></pre>
-
-<h3>
-<a id="evidencebasedpolicy" class="anchor" href="#evidencebasedpolicy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>EvidenceBasedPolicy</h3>
-
-<pre><code>POLICY_A("A. Nature and Scope of exclusive rights (hyperlinking/browsing; reproduction right)",0),
-POLICY_B("B. Exceptions (distinguish innovation and public policy purposes; open-ended/closed list; commercial/non-commercial distinction)",1),
-POLICY_C("C. Mass digitisation/orphan works (non-use; extended collective licensing)",2),
-POLICY_D("D. Licensing and Business models (collecting societies; meta data; exchanges/hubs; windowing; crossborder availability)",3),
-POLICY_E("E. Fair remuneration (levies; copyright contracts)",4),
-POLICY_F("F. Enforcement (quantifying infringement; criminal sanctions; intermediary liability; graduated response; litigation and court data; commercial/non-commercial distinction; education and awareness)",5),
-UNKNOWN_POLICY("UNKNOWN",5);
-</code></pre>
 
 <h3>
 <a id="industry" class="anchor" href="#industry" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Industry</h3>
