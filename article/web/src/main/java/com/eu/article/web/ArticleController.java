@@ -192,18 +192,6 @@ public class ArticleController {
         return facade.getSimilarArticles(pageID,0.75);
     }
 
-    /**
-     * Returns all the similar articles to the article with the provided id
-     * @param pageID The page id of the article to find similar articles to
-     * @return a {@link ArticleList}
-     */
-
-    @RequestMapping(value = "/wordcloud")
-    public Map<String, Double> getAllArticlesWordCloud() {
-        initialiseFacade();
-        return facade.getAllArticlesWordCloud();
-    }
-
     private void initialiseFacade() {
         if (facade == null) {
             facade = new ArticleFacadeImpl("", "", URL_TO_WIKI, expiry);

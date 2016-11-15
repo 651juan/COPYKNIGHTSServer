@@ -1,10 +1,7 @@
 package com.eu.wiki.api;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +11,7 @@ import java.util.stream.Collectors;
  * Created by Juan on 08/10/2016.
  */
 public class QueryCacheFacadeImpl implements QueryCacheFacade {
+    private final String[] STOPWORDS = {"a", "about", "above", "across", "after", "again", "against", "all", "almost", "alone", "along", "already", "also", "although", "always", "among", "an", "and", "another", "any", "anybody", "anyone", "anything", "anywhere", "are", "area", "areas", "around", "as", "ask", "asked", "asking", "asks", "at", "away", "b", "back", "backed", "backing", "backs", "be", "became", "because", "become", "becomes", "been", "before", "began", "behind", "being", "beings", "best", "better", "between", "big", "both", "but", "by", "c", "came", "can", "cannot", "case", "cases", "certain", "certainly", "clear", "clearly", "come", "could", "d", "did", "differ", "different", "differently", "do", "does", "done", "down", "down", "downed", "downing", "downs", "during", "e", "each", "early", "either", "end", "ended", "ending", "ends", "enough", "even", "evenly", "ever", "every", "everybody", "everyone", "everything", "everywhere", "f", "face", "faces", "fact", "facts", "far", "felt", "few", "find", "finds", "first", "for", "four", "from", "full", "fully", "further", "furthered", "furthering", "furthers", "g", "gave", "general", "generally", "get", "gets", "give", "given", "gives", "go", "going", "good", "goods", "got", "great", "greater", "greatest", "group", "grouped", "grouping", "groups", "h", "had", "has", "have", "having", "he", "her", "here", "herself", "high", "high", "high", "higher", "highest", "him", "himself", "his", "how", "however", "i", "if", "important", "in", "interest", "interested", "interesting", "interests", "into", "is", "it", "its", "itself", "j", "just", "k", "keep", "keeps", "kind", "knew", "know", "known", "knows", "l", "large", "largely", "last", "later", "latest", "least", "less", "let", "lets", "like", "likely", "long", "longer", "longest", "m", "made", "make", "making", "man", "many", "may", "me", "member", "members", "men", "might", "more", "most", "mostly", "mr", "mrs", "much", "must", "my", "myself", "n", "necessary", "need", "needed", "needing", "needs", "never", "new", "new", "newer", "newest", "next", "no", "nobody", "non", "noone", "not", "nothing", "now", "nowhere", "number", "numbers", "o", "of", "off", "often", "old", "older", "oldest", "on", "once", "one", "only", "open", "opened", "opening", "opens", "or", "order", "ordered", "ordering", "orders", "other", "others", "our", "out", "over", "p", "part", "parted", "parting", "parts", "per", "perhaps", "place", "places", "point", "pointed", "pointing", "points", "possible", "present", "presented", "presenting", "presents", "problem", "problems", "put", "puts", "q", "quite", "r", "rather", "really", "right", "right", "room", "rooms", "s", "said", "same", "saw", "say", "says", "second", "seconds", "see", "seem", "seemed", "seeming", "seems", "sees", "several", "shall", "she", "should", "show", "showed", "showing", "shows", "side", "sides", "since", "small", "smaller", "smallest", "so", "some", "somebody", "someone", "something", "somewhere", "state", "states", "still", "still", "such", "sure", "t", "take", "taken", "than", "that", "the", "their", "them", "then", "there", "therefore", "these", "they", "thing", "things", "think", "thinks", "this", "those", "though", "thought", "thoughts", "three", "through", "thus", "to", "today", "together", "too", "took", "toward", "turn", "turned", "turning", "turns", "two", "u", "under", "until", "up", "upon", "us", "use", "used", "uses", "v", "very", "w", "want", "wanted", "wanting", "wants", "was", "way", "ways", "we", "well", "wells", "went", "were", "what", "when", "where", "whether", "which", "while", "who", "whole", "whose", "why", "will", "with", "within", "without", "work", "worked", "working", "works", "would", "x", "y", "year", "years", "yet", "you", "young", "younger", "youngest", "your", "yours", "z"};
     private HashMap<Integer, Article> cache;
     private HashMap<String, Integer> yearCache;
     private HashMap<String, Integer> authorCache;
@@ -167,7 +165,96 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
                 incrementCountToMap(countryCache, "");
             }
         }
-     }
+
+
+        //Generate WordClouds
+        //Get IDF
+        Map<String, Double> idFreq = new HashMap<>();
+        for(Article article : output.getArticles()) {
+            String aAbstract = article.getAbstract().toLowerCase();
+            aAbstract = aAbstract.replaceAll("\\d",""); //Replace all digits with empty string
+            aAbstract = aAbstract.replaceAll("[^\\p{L}\\p{Z}]", ""); //Unicode replace all non letters and non digits with empty string
+            String[] aAbstractWords = aAbstract.split(" ");
+            String[] unique = new HashSet<String>(Arrays.asList(aAbstractWords)).toArray(new String[0]);
+
+            for(String word : unique) {
+                if(!word.equals("") && !this.isIn(word, this.STOPWORDS) ) {
+                    if (idFreq.containsKey(word)) {
+                        Double tmp = idFreq.get(word);
+                        idFreq.put(word, tmp + 1);
+                    } else {
+                        idFreq.put(word, 1.0);
+                    }
+                }
+            }
+        }
+
+        for(Map.Entry<String,Double> entry : idFreq.entrySet()) {
+            Double docF = Math.log10(output.getArticles().size()/(double)idFreq.get(entry.getKey()));
+            idFreq.put(entry.getKey(),docF);
+        }
+
+        //Get TF and work out tf.idf
+        for(Article article : output.getArticles()) {
+            Map<String, Double> tFreq = new HashMap<>();
+            Map<String, Double> tfidf = new HashMap<>();
+
+            String aAbstract = article.getAbstract().toLowerCase();
+            aAbstract = aAbstract.replaceAll("\\d",""); //Replace all digits with empty string
+            aAbstract = aAbstract.replaceAll("[^\\p{L}\\p{Z}]", ""); //Unicode replace all non letters and non digits with empty string
+            String[] aAbstractWords = aAbstract.split(" ");
+
+            double max = 0;
+
+            for(String word : aAbstractWords) {
+                if(!word.equals("") && !this.isIn(word, this.STOPWORDS) ) {
+                    if (tFreq.containsKey(word)) {
+                        Double tmpVal = tFreq.get(word);
+                        if (tmpVal > max) {
+                            max = tmpVal;
+                        }
+                        tFreq.put(word, tmpVal + 1);
+                    } else {
+                        tFreq.put(word, 1.0);
+                    }
+                }
+            }
+
+            //Normalise tf
+            for(Map.Entry<String,Double> entry : tFreq.entrySet()) {
+                tFreq.put(entry.getKey(), entry.getValue()/max);
+            }
+
+            double maxTFIDF = 0;
+            for(Map.Entry<String,Double> entry : tFreq.entrySet()) {
+                String tmpKey = entry.getKey();
+                double tf = tFreq.get(tmpKey);
+                double idf = idFreq.get(tmpKey);
+                double tmpTFIDF = tf * idf;
+                if(tmpTFIDF > maxTFIDF) {
+                    maxTFIDF = tmpTFIDF;
+                }
+                tfidf.put(tmpKey, tmpTFIDF);
+            }
+
+            //Normalise TFIDF
+            for(Map.Entry<String,Double> entry : tfidf.entrySet()) {
+                tfidf.put(entry.getKey(),entry.getValue()/maxTFIDF);
+            }
+
+            article.setWordCloud(tfidf);
+        }
+
+    }
+
+    private boolean isIn(String toCheck, String[] toCheckIn) {
+        for(int i = 0; i < toCheckIn.length; i++) {
+            if(toCheckIn[i].equalsIgnoreCase(toCheck)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void incrementCountToMap(Map<String, Integer> map, String tmpValue) {
         if(map.containsKey(tmpValue)) {
@@ -255,5 +342,4 @@ public class QueryCacheFacadeImpl implements QueryCacheFacade {
         }
         return countryCache;
     }
-
 }

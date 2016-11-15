@@ -2,6 +2,7 @@ package com.eu.wiki.api;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Created by Juan on 29/09/2016.
@@ -22,6 +23,7 @@ public class Article {
     private String aRawContent;
     private Datasets aDatasets;
     private byte[] aVector;
+    private Map<String, Double> aWordCloud;
     // When true artle only contains title and pageid
     private boolean aShortArticle;
 
@@ -202,5 +204,13 @@ public class Article {
         }
 
         return (dotProd/denom);
+    }
+
+    public void setWordCloud(Map<String, Double> wordCloud) {
+        this.aWordCloud = wordCloud;
+    }
+
+    public Map<String, Double> getWordCloud() {
+        return this.aWordCloud;
     }
 }

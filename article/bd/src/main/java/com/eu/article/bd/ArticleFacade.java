@@ -129,18 +129,4 @@ public interface ArticleFacade {
      * @return a {@link Map}
      */
     Map<String, Integer> getArticleCountryCount();
-
-    /**
-     * Returns a Word Cloud of all the articles
-     * @return a {@link Map}
-     */
-    Map<String, Double> getAllArticlesWordCloud();
-
-    /**
-     * Given a {@link List} of {@link Article} returns a {@link Map} which is made up of words obtained from the article abstract
-     * as keys of type {@link String} and their corresponding {@link double} tf.idf value
-     * @param articleList The list of articles to work on
-     * @return a {@link Map}
-     */
-    Map<String,Double> getWordCloud(List<Article> articleList, boolean removeNumbers, boolean removeSymbols);
 }
