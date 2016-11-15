@@ -73,7 +73,7 @@ public class ArticleFacadeImpl implements ArticleFacade {
                 if (industry.equals( "null")) {
                     return Arrays.asList(article.getDatasets().getIndustry()).contains("");
                 } else{
-                    return Arrays.asList(article.getDatasets().getIndustry()).contains(industry);
+                    return Arrays.asList(article.getDatasets().getIndustry()).contains(Industry.valueOf(industry));
                 }
             } else {
                 if (industry.equals("null")) return true;
