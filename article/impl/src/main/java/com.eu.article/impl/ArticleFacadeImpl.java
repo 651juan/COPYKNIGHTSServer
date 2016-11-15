@@ -139,6 +139,7 @@ public class ArticleFacadeImpl implements ArticleFacade {
         return new ArticleList(result);
     }
 
+
     @Override
     public ArticleList getArticlesByKeyword(String keyword) {
         PorterStemmer stemmer = new PorterStemmer();
