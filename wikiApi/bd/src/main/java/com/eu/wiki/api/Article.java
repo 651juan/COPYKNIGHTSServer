@@ -213,4 +213,8 @@ public class Article {
     public Map<String, Double> getWordCloud() {
         return this.aWordCloud;
     }
+
+    public Double getWordValue(String name) {
+        return this.aWordCloud.get(name);
+    }
 }

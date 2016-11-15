@@ -140,8 +140,25 @@ public class ArticleFacadeImpl implements ArticleFacade {
     @Override
     public ArticleList getArticlesByKeyword(String keyword) {
         List<Article> allArticles =  this.getAllArticles().getArticles();
-        List<Article> result = allArticles.stream().filter(article -> article.getWordCloud().containsKey(keyword)).collect(Collectors.toList());
-
+        List<Article> result = allArticles.stream()
+                .filter(article -> article.getWordCloud().containsKey(keyword))
+                .collect(Collectors.toList());
+        Collections.sort(result,new Comparator<Article>()
+            {
+                public int compare(Article o1, Article o2) {
+                if (o1.getWordValue(keyword) ==
+                        o2.getWordValue(keyword))
+                {
+                    return 0;
+                }
+                else if (o1.getWordValue(keyword) <
+                        o2.getWordValue(keyword))
+                {
+                    return 1;
+                }
+                return -1;
+            }
+        });
         return new ArticleList(result);
     }
 
