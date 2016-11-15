@@ -1,5 +1,5 @@
 # Copy Knights API Server
-The Copy Knights API Server connects to the media wiki APIs and parses the content of the articles. The Copy Knights API Server exposes it's own API to provide easier access to the content of the articles. The API allows for searching and counting by a certain criteria. This will allow any developer to connect to the API to help with better visualizations of the article data. The Server also cache's most information as to improve performance, this can be configured also by the API.
+The Copy Knights API Server connects to the media wiki APIs and parses the content of the articles. The Copy Knights API Server exposes it's own API to provide easier access to the content of the articles. The API allows for searching and counting by a certain criteria. Some features which the API enables is extraction of keywords from the abstract and similarity between articles. This will allow any developer to connect to the API to help with better visualizations of the article data. The server also caches all information in memory and refreshes every predefined time as to improve performance.
 
 ## The API
 We have dedicated a whole page for the API below & we have also provided Javadoc in the '/docs' folder for more information regarding the process. THE API's are designed to follow mostly the REST API Ideology.
@@ -59,25 +59,6 @@ This API uses the path '/similar/:similar' with the path variable ':similar'.
 The ':similar' variable is the pageid of the article which you would like to get similar articles of. Eg. '/similar/1305'
 
 ## ENUMS
-
-### Fundamental Issue
-
-    ISSUE_1("1. Relationship between protection (subject matter/term/scope) and supply/economic development/growth/welfare",0),
-    ISSUE_2("2. Relationship between creative process and protection - what motivates creators (e.g. attribution; control; remuneration; time allocation)?",1),
-    ISSUE_3("3. Harmony of interest assumption between authors and publishers (creators and producers/investors)",2),
-    ISSUE_4("4. Effects of protection on industry structure (e.g. oligopolies; competition; economics of superstars; business models; technology adoption)",3),
-    ISSUE_5("5. Understanding consumption/use (e.g. determinants of unlawful behaviour; user-generated content; social media)",4),
-    UNKNOWN_ISSUE("UNKNOWN",5);
-
-### EvidenceBasedPolicy
-
-    POLICY_A("A. Nature and Scope of exclusive rights (hyperlinking/browsing; reproduction right)",0),
-    POLICY_B("B. Exceptions (distinguish innovation and public policy purposes; open-ended/closed list; commercial/non-commercial distinction)",1),
-    POLICY_C("C. Mass digitisation/orphan works (non-use; extended collective licensing)",2),
-    POLICY_D("D. Licensing and Business models (collecting societies; meta data; exchanges/hubs; windowing; crossborder availability)",3),
-    POLICY_E("E. Fair remuneration (levies; copyright contracts)",4),
-    POLICY_F("F. Enforcement (quantifying infringement; criminal sanctions; intermediary liability; graduated response; litigation and court data; commercial/non-commercial distinction; education and awareness)",5),
-    UNKNOWN_POLICY("UNKNOWN",5);
     
 ### Industry
     INDUSTRY_1("Advertising",0),
@@ -100,7 +81,7 @@ The ':similar' variable is the pageid of the article which you would like to get
 
 
 ## Authors and Contributors
-The Authors of this system are @Adrianapap @651juan & @xDanielle.
+The Authors of this system are [Adrianapap](https://github.com/adrianapap) [651juan](https://github.com/651juan) & [xDanielle](https://github.com/xDanielle).
 
 ## Support or Contact
 If you have any queries feel free to contact us.
