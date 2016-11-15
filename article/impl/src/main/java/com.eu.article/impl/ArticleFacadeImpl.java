@@ -147,22 +147,15 @@ public class ArticleFacadeImpl implements ArticleFacade {
         List<Article> result = allArticles.stream()
                 .filter(article -> article.getStemmedWordCloud().containsKey(search))
                 .collect(Collectors.toList());
-        Collections.sort(result,new Comparator<Article>()
-            {
-                public int compare(Article o1, Article o2) {
-                if (o1.getWordValue(search) ==
-                        o2.getWordValue(search))
-                {
-                    return 0;
-                }
-                else if (o1.getWordValue(search) <
-                        o2.getWordValue(search))
-                {
-                    return 1;
-                }
-                return -1;
-            }
-        });
+        Collections.sort(result, (o1, o2) -> {
+        if (o1.getWordValue(search) == o2.getWordValue(search)) {
+            return 0;
+        }
+        else if (o1.getWordValue(search) < o2.getWordValue(search)) {
+            return 1;
+        }
+        return -1;
+    });
         return new ArticleList(result);
     }
 
