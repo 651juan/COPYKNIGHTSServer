@@ -32,6 +32,32 @@ The ':issue' variable is a string of the key of the FundamentalIssue ENUM which 
 This API uses the path '/evidence/:policy' with the path variable ':policy'.
 The ':policy' variable is a string of the key of the EvidenceBasedPolicy ENUM which is described below. Eg. '/evidence/Policy_A'
 
+### Get Articles by Keyword
+This API uses the path '/wordcloud/:keyword' with the path variable ':keyword'.
+The ':keyword' variable is the keyword from the article which you would like to search for of. Eg. '/keyword/innovation'
+
+### Get Author Count
+This API uses the path '/author'. It will return a list of authors followed by their respective count.
+
+### Get Country Count
+This API uses the path '/country'. It will return a list of countries followed by their respective count.
+
+### Get Year Count
+This API uses the path '/year'. It will return a list of years followed by their respective count.
+
+### Get Fundamental Issue Count
+This API uses the path '/fundamental'. It will return a list of FundamentalIssue ENUM Keys followed by their respective count.
+
+### Get Evidence Based Policy Count 
+This API uses the path '/evidence'. It will return a list of EvidenceBasedPolicy ENUM Keys followed by their respective count.
+
+### Get Industry Count
+This API uses the path '/industry'. It will return a list of Industry ENUM Keys followed by their respective count.
+
+### Get Similar Articles
+This API uses the path '/similar/:similar' with the path variable ':similar'.
+The ':similar' variable is the pageid of the article which you would like to get similar articles of. Eg. '/similar/1305'
+
 ## ENUMS
 
 ### Fundamental Issue
@@ -52,6 +78,25 @@ The ':policy' variable is a string of the key of the EvidenceBasedPolicy ENUM wh
     POLICY_E("E. Fair remuneration (levies; copyright contracts)",4),
     POLICY_F("F. Enforcement (quantifying infringement; criminal sanctions; intermediary liability; graduated response; litigation and court data; commercial/non-commercial distinction; education and awareness)",5),
     UNKNOWN_POLICY("UNKNOWN",5);
+    
+### Industry
+    INDUSTRY_1("Advertising",0),
+    INDUSTRY_2("Architectural",1),
+    INDUSTRY_3("Computer consultancy",2),
+    INDUSTRY_4("Computer programming",3),
+    INDUSTRY_5("Creative, arts and entertainment",4),
+    INDUSTRY_6("Cultural education",5),
+    INDUSTRY_7("Film and motion pictures",6),
+    INDUSTRY_8("PR and communication",7),
+    INDUSTRY_9("Photographic activities",8),
+    INDUSTRY_10("Programming and broadcasting",9),
+    INDUSTRY_11("Publishing of books, periodicals and other publishing",10),
+    INDUSTRY_12("Software publishing (including video games)",11),
+    INDUSTRY_13("Sound recording and music publishing",12),
+    INDUSTRY_14("Specialised design",13),
+    INDUSTRY_15("Television programmes",14),
+    INDUSTRY_16("Translation and interpretation",15),
+    UNKNOWN_INDUSTRY("UNKNOWN",16);
 
 
 ## Authors and Contributors
