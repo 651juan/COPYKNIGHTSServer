@@ -109,7 +109,11 @@ public interface ArticleFacade {
     Map<String, Integer> getArticleFundamentalIssueCount();
 
     /**
-     * Returns all the similar articles to the article with the provided id
+     * Returns all the similar articles to the article with the provided id.
+     * The similarity is calculated by comparing the cosine distance of each article's vector.
+     * The vector is calculated by using the values of the following fields:
+     *  {@link com.eu.wiki.api.FundamentalIssue}, {@link com.eu.wiki.api.EvidenceBasedPolicy}, {@link com.eu.wiki.api.Industry}
+     *  {@link com.eu.wiki.api.MethodOfCollection}, {@link com.eu.wiki.api.MethodOfCollection}.
      * @param pageID The page id of the article to find similar articles to
      * @param threshold threshold The similarity threshold
      * @return a {@link ArticleList}
