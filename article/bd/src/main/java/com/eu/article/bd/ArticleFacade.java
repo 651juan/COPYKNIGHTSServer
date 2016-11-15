@@ -81,6 +81,13 @@ public interface ArticleFacade {
     ArticleList getArticlesByAuthor(String author);
 
     /**
+     * Returns an {@link ArticleList} containing all the articles in the keyword.
+     * @param word the key word to get.
+     * @return An {@link ArticleList} containing all the articles containing the keyword.
+     */
+    ArticleList getArticlesByKeyword(String word);
+
+    /**
      * Returns a {@link Map} Containing the author as a key and the count
      * of the articles that where published by that Author as values
      * @return a {@link Map}

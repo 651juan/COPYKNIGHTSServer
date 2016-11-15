@@ -121,6 +121,17 @@ public class ArticleController {
     }
 
     /**
+     * Look at {@link ArticleFacade#getArticlesByKeyword(String)}
+     * @param keyWord a keyword Key.
+     * @return An {@link ArticleList} that contains Articles with the industry provided.
+     */
+    @RequestMapping(value = "/wordcloud/{keyWordToGet}", method=RequestMethod.GET)
+    public ArticleList getArticlesByKeyWord(@PathVariable("keyWordToGet") String keyWord) {
+        initialiseFacade();
+        return facade.getArticlesByKeyword(keyWord);
+    }
+
+    /**
      * Look at @{@link ArticleFacade#getArticleAuthorCount()}
      * @return A {@link Map} of authors as a key and the count as a value.
      */
@@ -185,7 +196,6 @@ public class ArticleController {
      * @param pageID The page id of the article to find similar articles to
      * @return a {@link ArticleList}
      */
-
     @RequestMapping(value = "/similar/{similarPageId}", method=RequestMethod.GET)
     public ArticleList getSimilarity(@PathVariable("similarPageId") int pageID) {
         initialiseFacade();

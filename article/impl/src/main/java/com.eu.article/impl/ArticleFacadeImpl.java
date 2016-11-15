@@ -138,6 +138,14 @@ public class ArticleFacadeImpl implements ArticleFacade {
     }
 
     @Override
+    public ArticleList getArticlesByKeyword(String keyword) {
+        List<Article> allArticles =  this.getAllArticles().getArticles();
+        List<Article> result = allArticles.stream().filter(article -> article.getWordCloud().containsKey(keyword)).collect(Collectors.toList());
+
+        return new ArticleList(result);
+    }
+
+    @Override
     public Map<String, Integer> getArticleAuthorCount() {
         return facade.getAuthorCount();
     }
